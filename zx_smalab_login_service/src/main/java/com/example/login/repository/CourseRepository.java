@@ -20,4 +20,6 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
     Optional<Course> findByIdAndIsDeleted(Long id, Integer isDeleted);
 
     long countByIsDeleted(Integer isDeleted);
+
+    List<Course> findByIsDeleted(Integer isDeleted);
 }
