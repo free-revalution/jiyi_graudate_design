@@ -1,0 +1,71 @@
+version: '3.8'
+
+services:
+  mysql:
+    image: mysql:8.0
+    container_name: edu_mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD:-123456}
+      MYSQL_DATABASE: vanx_user_permiss
+      TZ: Asia/Shanghai
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+      - ./mysql/init.sql:/docker-entrypoint-initdb.d/init.sql:ro
+    command: >
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-authentication-plugin=mysql_native_password
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ../zx_smalab_login_service
+      dockerfile: ../deploy/backend/Dockerfile
+    container_name: edu_backend
+    ports:
+      - "8080:8080"
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql:3306/vanx_user_permiss?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: ${MYSQL_PASSWORD:-123456}
+      FILE_UPLOAD_DIR: /app/uploads
+    volumes:
+      - upload_data:/app/uploads
+    restart: on-failure
+
+  user-frontend:
+    build:
+      context: ../zx_smalab_user_pc
+      dockerfile: ../deploy/user-frontend/Dockerfile
+    container_name: edu_user_frontend
+
+  admin-frontend:
+    build:
+      context: ../zx_smalab_tea_mana_pc
+      dockerfile: ../deploy/admin-frontend/Dockerfile
+    container_name: edu_admin_frontend
+
+  nginx:
+    image: nginx:alpine
+    container_name: edu_nginx
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+    depends_on:
+      - user-frontend
+      - admin-frontend
+      - backend
+
+volumes:
+  mysql_data:
+  upload_data:
