@@ -607,7 +607,7 @@ INSERT IGNORE INTO class_exercise (id, course_id, name, type, status, question_c
 -- ============================================================
 -- Seed: Exercise Questions (for exercise 1)
 -- ============================================================
-INSERT IGNORE INTO exercise_question (exercise_id, sort_order, type, content, options, answer, analysis, difficulty) VALUES
+INSERT IGNORE INTO exercise_question (exercise_id, sort_order, type, content, options, answer, analysis, difficulty, knowledge_points) VALUES
 (1, 1, 'single', 'Python中用于定义函数的关键字是？', '["A.def", "B.func", "C.function", "D.define"]', 'A', 'Python使用def关键字来定义函数，语法为def function_name(parameters):', 0.40, 'Python基础'),
 (1, 2, 'single', '下列哪种数据结构遵循先进先出（FIFO）原则？', '["A.栈", "B.队列", "C.二叉树", "D.哈希表"]', 'B', '队列遵循先进先出原则，栈遵循后进先出（LIFO）原则。', 0.50, '数据结构');
 
