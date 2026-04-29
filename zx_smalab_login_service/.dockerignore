@@ -1,0 +1,11 @@
+target/
+.git
+.gitignore
+.idea/
+*.iml
+*.iws
+*.ipr
+.DS_Store
+README.md
+logs/
+uploads/
