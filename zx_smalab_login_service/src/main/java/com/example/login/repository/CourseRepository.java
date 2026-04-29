@@ -17,6 +17,8 @@ public interface CourseRepository extends JpaRepository<Course, Long> {
 
     List<Course> findByStatusAndIsDeleted(String status, Integer isDeleted);
 
+    List<Course> findTop4ByStatusAndIsDeletedOrderByCreatedTimeDesc(String status, Integer isDeleted);
+
     Optional<Course> findByIdAndIsDeleted(Long id, Integer isDeleted);
 
     long countByIsDeleted(Integer isDeleted);

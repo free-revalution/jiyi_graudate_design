@@ -13,4 +13,8 @@ import java.util.List;
 public interface CourseTeacherRepository extends JpaRepository<CourseTeacher, Long> {
 
     List<CourseTeacher> findByCourseIdAndIsDeleted(Long courseId, Integer isDeleted);
+
+    long countByCourseIdAndIsDeleted(Long courseId, Integer isDeleted);
+
+    long countByIsDeleted(Integer isDeleted);
 }
