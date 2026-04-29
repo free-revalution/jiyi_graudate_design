@@ -2,10 +2,12 @@ package com.example.login.service.impl;
 
 import com.example.login.dto.response.PageResult;
 import com.example.login.entity.Course;
+import com.example.login.entity.CourseClass;
+import com.example.login.entity.CourseStudent;
+import com.example.login.entity.CourseTeacher;
 import com.example.login.entity.CourseTerm;
 import com.example.login.exception.BusinessException;
-import com.example.login.repository.CourseRepository;
-import com.example.login.repository.CourseTermRepository;
+import com.example.login.repository.*;
 import com.example.login.service.CourseService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +26,9 @@ public class CourseServiceImpl implements CourseService {
 
     private final CourseRepository courseRepository;
     private final CourseTermRepository courseTermRepository;
+    private final CourseTeacherRepository courseTeacherRepository;
+    private final CourseClassRepository courseClassRepository;
+    private final CourseStudentRepository courseStudentRepository;
 
     @Override
     public PageResult<Course> getCourseList(int page, int limit, String name, String status) {
@@ -152,5 +157,107 @@ public class CourseServiceImpl implements CourseService {
         }
         term.setIsDeleted(1);
         courseTermRepository.save(term);
+    }
+
+    // ==================== Teacher Team Management ====================
+
+    @Override
+    public List<CourseTeacher> getTeachersByCourseId(Long courseId) {
+        return courseTeacherRepository.findByCourseIdAndIsDeleted(courseId, 0);
+    }
+
+    @Override
+    @Transactional
+    public CourseTeacher createTeacher(Long courseId, CourseTeacher teacher) {
+        teacher.setCourseId(courseId);
+        teacher.setIsDeleted(0);
+        teacher.setJoinTime(new Date());
+        teacher.setCreatedTime(new Date());
+        return courseTeacherRepository.save(teacher);
+    }
+
+    @Override
+    @Transactional
+    public CourseTeacher updateTeacher(Long courseId, Long teacherId, CourseTeacher teacher) {
+        CourseTeacher existing = courseTeacherRepository.findById(teacherId)
+                .orElseThrow(() -> new BusinessException(404, "教师不存在"));
+        if (!existing.getCourseId().equals(courseId)) {
+            throw new BusinessException(400, "教师不属于该课程");
+        }
+        if (teacher.getName() != null) existing.setName(teacher.getName());
+        if (teacher.getRole() != null) existing.setRole(teacher.getRole());
+        if (teacher.getWorkNo() != null) existing.setWorkNo(teacher.getWorkNo());
+        if (teacher.getDepartment() != null) existing.setDepartment(teacher.getDepartment());
+        return courseTeacherRepository.save(existing);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTeacher(Long courseId, Long teacherId) {
+        CourseTeacher teacher = courseTeacherRepository.findById(teacherId)
+                .orElseThrow(() -> new BusinessException(404, "教师不存在"));
+        if (!teacher.getCourseId().equals(courseId)) {
+            throw new BusinessException(400, "教师不属于该课程");
+        }
+        teacher.setIsDeleted(1);
+        courseTeacherRepository.save(teacher);
+    }
+
+    // ==================== Class Management ====================
+
+    @Override
+    public List<CourseClass> getClassesByCourseId(Long courseId) {
+        return courseClassRepository.findByCourseIdAndIsDeleted(courseId, 0);
+    }
+
+    @Override
+    @Transactional
+    public CourseClass createClass(Long courseId, CourseClass courseClass) {
+        courseClass.setCourseId(courseId);
+        courseClass.setStudentCount(0);
+        courseClass.setIsDeleted(0);
+        courseClass.setCreatedTime(new Date());
+        return courseClassRepository.save(courseClass);
+    }
+
+    // ==================== Student Management ====================
+
+    @Override
+    public List<CourseStudent> getStudentsByClassId(Long courseId, Long classId) {
+        return courseStudentRepository.findByClassIdAndIsDeleted(classId, 0);
+    }
+
+    @Override
+    @Transactional
+    public CourseStudent createStudent(Long courseId, Long classId, CourseStudent student) {
+        student.setCourseId(courseId);
+        student.setClassId(classId);
+        student.setJoinTime(new Date());
+        student.setCreatedTime(new Date());
+        student.setIsDeleted(0);
+        CourseStudent saved = courseStudentRepository.save(student);
+        // Update student count
+        courseClassRepository.findById(classId).ifPresent(cls -> {
+            cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classId, 0));
+            courseClassRepository.save(cls);
+        });
+        return saved;
+    }
+
+    @Override
+    @Transactional
+    public void deleteStudent(Long courseId, Long classId, Long studentId) {
+        CourseStudent student = courseStudentRepository.findById(studentId)
+                .orElseThrow(() -> new BusinessException(404, "学生不存在"));
+        if (!student.getClassId().equals(classId) || !student.getCourseId().equals(courseId)) {
+            throw new BusinessException(400, "学生不属于该课程班级");
+        }
+        student.setIsDeleted(1);
+        courseStudentRepository.save(student);
+        // Update student count
+        courseClassRepository.findById(classId).ifPresent(cls -> {
+            cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classId, 0));
+            courseClassRepository.save(cls);
+        });
     }
 }
