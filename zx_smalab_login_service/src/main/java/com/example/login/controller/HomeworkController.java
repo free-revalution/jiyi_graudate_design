@@ -14,8 +14,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,7 +33,7 @@ public class HomeworkController {
     private final HomeworkService homeworkService;
     private final ObjectMapper objectMapper;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
     // ==================== Admin Endpoints ====================
 
@@ -187,8 +188,8 @@ public class HomeworkController {
             return null;
         }
         try {
-            return DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
+            return Date.from(LocalDateTime.parse(dateStr, DATE_FORMAT).atZone(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
             return null;
         }
     }

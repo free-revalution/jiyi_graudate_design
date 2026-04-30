@@ -1,11 +1,2 @@
--- 初始化测试用户数据
--- BCrypt加密后的密码: 123456
-
-INSERT INTO user_authorize (authorize_id, user_id, user_status, identity_type, identifier, credential, created_time)
-VALUES 
-(1, 1001, '1', 'student_id', '20240001', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjzqAKL9xL5jvMFVdNJHvGCgTq/VEq', NOW()),
-(2, 1002, '1', 'student_id', '20240002', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjzqAKL9xL5jvMFVdNJHvGCgTq/VEq', NOW()),
-(3, 2001, '1', 'teacher_id', 'T001', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjzqAKL9xL5jvMFVdNJHvGCgTq/VEq', NOW()),
-(4, 2002, '1', 'teacher_id', 'T002', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjzqAKL9xL5jvMFVdNJHvGCgTq/VEq', NOW()),
-(5, 3001, '1', 'phone', '15720801803', '$2a$10$N9qo8uLOickgx2ZMRZoMye.IjzqAKL9xL5jvMFVdNJHvGCgTq/VEq', NOW())
-ON DUPLICATE KEY UPDATE user_status = VALUES(user_status);
+-- 用户授权初始化数据（密码由后端 ApplicationRunner 动态生成）
+-- 此文件仅用于确保表存在，实际数据由后端代码插入

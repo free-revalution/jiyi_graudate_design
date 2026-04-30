@@ -44,4 +44,7 @@ public class ExerciseAnswer {
     @Column(name = "created_time")
     private Date createdTime;
 
+    @Column(name = "is_deleted")
+    private Integer isDeleted;
+
 }

@@ -10,8 +10,9 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -26,7 +27,7 @@ public class CheckInController {
 
     private final CheckInService checkInService;
 
-    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd");
+    private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     @GetMapping("/course/{courseId}/checkin/list")
     public ResponseEntity<ApiResponse<List<CheckIn>>> getCheckInList(
@@ -103,8 +104,8 @@ public class CheckInController {
             return null;
         }
         try {
-            return DATE_FORMAT.parse(dateStr);
-        } catch (ParseException e) {
+            return Date.from(LocalDate.parse(dateStr, DATE_FORMAT).atStartOfDay(ZoneId.systemDefault()).toInstant());
+        } catch (Exception e) {
             return null;
         }
     }

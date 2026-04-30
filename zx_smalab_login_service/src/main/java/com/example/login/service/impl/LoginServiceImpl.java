@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.Optional;
 import java.util.UUID;
 
 /**
@@ -143,7 +144,7 @@ public class LoginServiceImpl implements LoginService {
             throw new BusinessException(400, "该手机号已被注册");
         }
 
-        long maxUserId = userAuthorizeRepository.findMaxUserId() + 1;
+        long maxUserId = Optional.ofNullable(userAuthorizeRepository.findMaxUserId()).orElse(0L) + 1;
 
         UserAuthorize userAuthorize = UserAuthorize.builder()
                 .userId(maxUserId)

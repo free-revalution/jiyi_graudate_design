@@ -4,6 +4,34 @@
 -- ============================================================
 
 -- ============================================================
+-- 0. user_authorize (User authentication)
+-- ============================================================
+CREATE TABLE IF NOT EXISTS user_authorize (
+  authorize_id BIGINT PRIMARY KEY AUTO_INCREMENT,
+  user_id BIGINT,
+  user_status VARCHAR(5) DEFAULT '1',
+  identity_type VARCHAR(50),
+  identifier VARCHAR(500),
+  credential VARCHAR(200),
+  login_time DATETIME,
+  login_ip VARCHAR(20),
+  login_note VARCHAR(100),
+  login_status VARCHAR(5),
+  access_token VARCHAR(500),
+  refresh_token VARCHAR(500),
+  expires_in BIGINT,
+  oauth_info TEXT,
+  editor_id BIGINT,
+  creator_id BIGINT,
+  modified_time DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  other_info_one VARCHAR(50),
+  other_info_two VARCHAR(50),
+  remark VARCHAR(50),
+  is_deleted INT DEFAULT 0
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+-- ============================================================
 -- 1. user_info (Extended user information)
 -- ============================================================
 CREATE TABLE IF NOT EXISTS user_info (
@@ -177,6 +205,7 @@ CREATE TABLE IF NOT EXISTS homework_answer (
   score DECIMAL(5,2),
   submit_time DATETIME,
   created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  is_deleted INT DEFAULT 0,
   UNIQUE KEY uk_homework_user(homework_id, user_id)
 );
 
@@ -233,6 +262,7 @@ CREATE TABLE IF NOT EXISTS exercise_answer (
   score DECIMAL(5,2),
   submit_time DATETIME,
   created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
+  is_deleted INT DEFAULT 0,
   UNIQUE KEY uk_exercise_user(exercise_id, user_id)
 );
 
@@ -339,7 +369,7 @@ CREATE TABLE IF NOT EXISTS check_in (
   enable_sign_out TINYINT DEFAULT 0,
   total_count INT DEFAULT 0,
   absent_count INT DEFAULT 0,
-  status VARCHAR(20) DEFAULT 'notStarted',
+  status VARCHAR(20) DEFAULT 'not_started',
   creator_id BIGINT,
   created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
   is_deleted INT DEFAULT 0,
@@ -631,8 +661,8 @@ INSERT IGNORE INTO question_bank (id, name, category, creator, department, quest
 -- Seed: Check-in (for course 1)
 -- ============================================================
 INSERT IGNORE INTO check_in (id, course_id, class_id, name, date, type, duration_minutes, status, creator_id) VALUES
-(1, 1, 1, '第1周课堂签到', '2025-09-05', 'qrcode', 30, 'ended', 2001),
-(2, 1, 1, '第2周课堂签到', '2025-09-12', 'qrcode', 30, 'ended', 2001);
+(1, 1, 1, '第1周课堂签到', '2025-09-05', 'qrcode', 30, 'finished', 2001),
+(2, 1, 1, '第2周课堂签到', '2025-09-12', 'qrcode', 30, 'finished', 2001);
 
 -- ============================================================
 -- Seed: Score Weight (for course 1)
