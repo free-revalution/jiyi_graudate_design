@@ -9,20 +9,21 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
-/**
- * 用户个人中心控制器
- */
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
 public class MyController {
 
+    private static final DateTimeFormatter DATE_FMT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
+    private final CourseClassRepository courseClassRepository;
     private final HomeworkRepository homeworkRepository;
     private final HomeworkAnswerRepository homeworkAnswerRepository;
     private final TrainingRepository trainingRepository;
@@ -33,7 +34,6 @@ public class MyController {
         List<CourseStudent> enrollments = courseStudentRepository.findByUserIdAndIsDeleted(userId, 0);
 
         List<Map<String, Object>> result = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 
         for (CourseStudent enrollment : enrollments) {
             Course course = courseRepository.findByIdAndIsDeleted(enrollment.getCourseId(), 0).orElse(null);
@@ -44,10 +44,9 @@ public class MyController {
             item.put("name", course.getName());
             item.put("cover", course.getCoverUrl());
             item.put("className", enrollment.getClassName());
-            item.put("startTime", course.getCreatedTime() != null ? sdf.format(course.getCreatedTime()) : "");
-            item.put("endTime", course.getModifiedTime() != null ? sdf.format(course.getModifiedTime()) : "");
+            item.put("startTime", course.getCreatedTime() != null ? formatDate(course.getCreatedTime()) : "");
+            item.put("endTime", course.getModifiedTime() != null ? formatDate(course.getModifiedTime()) : "");
 
-            // Calculate homework stats
             List<Homework> homeworkList = homeworkRepository.findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(course.getId(), 0);
             int pendingCount = 0;
             int submittedCount = 0;
@@ -59,7 +58,6 @@ public class MyController {
                 if (answer.isPresent()) {
                     submittedCount++;
                 } else {
-                    // Check if deadline passed
                     if (hw.getEndTime() != null && hw.getEndTime().before(new Date())) {
                         unsubmittedCount++;
                     } else {
@@ -79,6 +77,36 @@ public class MyController {
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
+    @PostMapping("/my/courses/{courseId}/enroll")
+    public ResponseEntity<ApiResponse<Void>> enrollCourse(@PathVariable Long courseId) {
+        Long userId = getCurrentUserId();
+
+        Course course = courseRepository.findByIdAndIsDeleted(courseId, 0)
+                .orElse(null);
+        if (course == null || !"published".equals(course.getStatus())) {
+            return ResponseEntity.ok(ApiResponse.error(404, "课程不存在或未发布"));
+        }
+
+        if (courseStudentRepository.existsByCourseIdAndUserIdAndIsDeleted(courseId, userId, 0)) {
+            return ResponseEntity.ok(ApiResponse.error(400, "已加入该课程"));
+        }
+
+        List<CourseClass> classes = courseClassRepository.findByCourseIdAndIsDeleted(courseId, 0);
+        Long classId = classes.isEmpty() ? 0L : classes.get(0).getId();
+
+        CourseStudent student = CourseStudent.builder()
+                .courseId(courseId)
+                .classId(classId)
+                .userId(userId)
+                .joinTime(new Date())
+                .createdTime(new Date())
+                .isDeleted(0)
+                .build();
+        courseStudentRepository.save(student);
+
+        return ResponseEntity.ok(ApiResponse.success("加入成功", null));
+    }
+
     @GetMapping("/my/course/{courseId}")
     public ResponseEntity<ApiResponse<Map<String, Object>>> getMyCourseDetail(@PathVariable Long courseId) {
         Long userId = getCurrentUserId();
@@ -89,7 +117,6 @@ public class MyController {
         Map<String, Object> data = new LinkedHashMap<>();
         data.put("course", course);
 
-        // Homework stats
         List<Homework> homeworkList = homeworkRepository.findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(courseId, 0);
         int pendingCount = 0;
         int submittedCount = 0;
@@ -120,6 +147,10 @@ public class MyController {
         Long userId = getCurrentUserId();
         List<Training> trainings = trainingRepository.findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(courseId, 0);
         return ResponseEntity.ok(ApiResponse.success(trainings));
+    }
+
+    private String formatDate(Date date) {
+        return date.toInstant().atZone(ZoneId.systemDefault()).format(DATE_FMT);
     }
 
     protected Long getCurrentUserId() {

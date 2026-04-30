@@ -6,7 +6,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 /**
@@ -40,13 +41,13 @@ public class DashboardController {
     public ResponseEntity<ApiResponse<List<Map<String, Object>>>> getTrend(
             @RequestParam(defaultValue = "7") int days) {
         List<Map<String, Object>> trend = new ArrayList<>();
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-        Calendar cal = Calendar.getInstance();
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        LocalDate today = LocalDate.now();
 
         for (int i = days - 1; i >= 0; i--) {
-            cal.add(Calendar.DAY_OF_MONTH, i == days - 1 ? -(days - 1) : 1);
+            LocalDate date = today.minusDays(i);
             Map<String, Object> dayData = new LinkedHashMap<>();
-            dayData.put("date", sdf.format(cal.getTime()));
+            dayData.put("date", fmt.format(date));
             dayData.put("courseCount", 0);
             dayData.put("studentCount", 0);
             dayData.put("homeworkCount", 0);
