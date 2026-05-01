@@ -3,6 +3,9 @@
 -- Online Education Platform - Business Tables & Seed Data
 -- ============================================================
 
+CREATE DATABASE IF NOT EXISTS vanx_user_permiss DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE vanx_user_permiss;
+
 -- ============================================================
 -- 0. user_authorize (User authentication)
 -- ============================================================
