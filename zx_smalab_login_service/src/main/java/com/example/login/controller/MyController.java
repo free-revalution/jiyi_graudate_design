@@ -112,7 +112,18 @@ public class MyController {
         final String[] nameHolder = { "" };
         userInfoRepository.findByUserId(userId).ifPresent(user -> nameHolder[0] = user.getUserName());
 
-        try {
+        // Check for soft-deleted record (from previous unenroll) and restore it
+        List<CourseStudent> deletedRecords = courseStudentRepository
+                .findByCourseIdAndUserIdAndIsDeleted(courseId, userId, 1);
+        if (!deletedRecords.isEmpty()) {
+            CourseStudent existing = deletedRecords.get(0);
+            existing.setClassId(classIdHolder[0]);
+            existing.setClassName(className);
+            existing.setName(nameHolder[0]);
+            existing.setJoinTime(new Date());
+            existing.setIsDeleted(0);
+            courseStudentRepository.save(existing);
+        } else {
             CourseStudent student = CourseStudent.builder()
                     .courseId(courseId)
                     .classId(classIdHolder[0])
@@ -124,15 +135,13 @@ public class MyController {
                     .isDeleted(0)
                     .build();
             courseStudentRepository.save(student);
-            if (classIdHolder[0] > 0) {
-                courseClassRepository.findById(classIdHolder[0]).ifPresent(cls -> {
-                    cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classIdHolder[0], 0));
-                    courseClassRepository.save(cls);
-                });
-            }
-        } catch (org.springframework.dao.DataIntegrityViolationException e) {
-            log.warn("【选课】重复选课: userId={}, courseId={}, classId={}", userId, courseId, classIdHolder[0]);
-            return ResponseEntity.ok(ApiResponse.error(400, "已加入该课程"));
+        }
+
+        if (classIdHolder[0] > 0) {
+            courseClassRepository.findById(classIdHolder[0]).ifPresent(cls -> {
+                cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classIdHolder[0], 0));
+                courseClassRepository.save(cls);
+            });
         }
 
         return ResponseEntity.ok(ApiResponse.success("加入成功", null));
