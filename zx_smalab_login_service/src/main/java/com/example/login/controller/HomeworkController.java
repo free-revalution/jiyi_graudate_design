@@ -7,6 +7,7 @@ import com.example.login.dto.response.PageResult;
 import com.example.login.entity.Homework;
 import com.example.login.entity.HomeworkAnswer;
 import com.example.login.entity.HomeworkQuestion;
+import com.example.login.repository.HomeworkQuestionRepository;
 import com.example.login.service.HomeworkService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -15,9 +16,11 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -32,6 +35,7 @@ import java.util.Map;
 public class HomeworkController {
 
     private final HomeworkService homeworkService;
+    private final HomeworkQuestionRepository homeworkQuestionRepository;
     private final ObjectMapper objectMapper;
 
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -92,10 +96,26 @@ public class HomeworkController {
     }
 
     @GetMapping("/course/{courseId}/homework/{id}")
-    public ResponseEntity<ApiResponse<Homework>> getHomework(
+    public ResponseEntity<ApiResponse<Map<String, Object>>> getHomework(
             @PathVariable Long courseId,
             @PathVariable Long id) {
-        return ResponseEntity.ok(ApiResponse.success(homeworkService.getHomeworkById(id)));
+        Homework homework = homeworkService.getHomeworkById(id);
+        List<HomeworkQuestion> questions = homeworkQuestionRepository
+                .findByHomeworkIdAndIsDeletedOrderBySortOrder(id, 0);
+        Map<String, Object> result = new HashMap<>();
+        result.put("id", homework.getId());
+        result.put("name", homework.getName());
+        result.put("cover", homework.getCover());
+        result.put("type", homework.getType());
+        result.put("scoreType", homework.getScoreType());
+        result.put("status", homework.getStatus());
+        result.put("startTime", homework.getStartTime());
+        result.put("endTime", homework.getEndTime());
+        result.put("classId", homework.getClassId());
+        result.put("courseId", homework.getCourseId());
+        result.put("creatorId", homework.getCreatorId());
+        result.put("questions", questions);
+        return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @PutMapping("/course/{courseId}/homework/{id}")

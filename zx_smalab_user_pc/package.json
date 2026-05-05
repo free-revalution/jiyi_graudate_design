@@ -1,0 +1,25 @@
+{
+  "name": "zx_smalab_user_pc",
+  "version": "1.0.0",
+  "description": "在线课程教育平台",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "@element-plus/icons-vue": "^2.1.0",
+    "axios": "^1.14.0",
+    "element-plus": "^2.4.1",
+    "monaco-editor": "^0.55.1",
+    "monaco-editor-vue3": "^1.0.4",
+    "pinia": "^2.1.6",
+    "vue": "^3.3.4",
+    "vue-router": "^4.2.4"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^4.3.4",
+    "sass": "^1.66.1",
+    "vite": "^4.4.9"
+  }
+}

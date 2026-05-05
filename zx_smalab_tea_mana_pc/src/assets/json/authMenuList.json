@@ -1,0 +1,568 @@
+{
+  "code": 200,
+  "data": [
+    {
+      "path": "/home/index",
+      "name": "home",
+      "component": "/home/index",
+      "meta": {
+        "icon": "HomeFilled",
+        "title": "首页",
+        "isLink": "",
+        "isHide": false,
+        "isFull": false,
+        "isAffix": true,
+        "isKeepAlive": true
+      }
+    },
+    {
+      "path": "/courseCenter",
+      "name": "courseCenter",
+      "redirect": "/courseCenter/teachingCourse",
+      "meta": {
+        "icon": "MessageBox",
+        "title": "课程中心",
+        "isLink": "",
+        "isHide": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/courseCenter/teachingCourse",
+          "name": "teachingCourse",
+          "component": "/courseCenter/teachingCourse/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "教学课程",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseCenter/learningCourse",
+          "name": "learningCourse",
+          "component": "/courseCenter/learningCourse/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "学习课程",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseCenter/followCourse",
+          "name": "followCourse",
+          "component": "/courseCenter/followCourse/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "关注课程",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/courseManage",
+      "name": "courseManage",
+      "component": "/courseManage/index",
+      "redirect": "/courseManage/classActivity",
+      "meta": {
+        "icon": "MessageBox",
+        "title": "课程管理",
+        "isLink": "",
+        "isHide": true,
+        "isFull": true,
+        "isAffix": false,
+        "isKeepAlive": true,
+        "isNewTab": true
+      },
+      "children": [
+        {
+          "path": "/courseManage/courseSetting",
+          "name": "courseManageCourseSetting",
+          "redirect": "/courseManage/courseSetting/baseInfo",
+          "meta": {
+            "icon": "Setting",
+            "title": "课程管理",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          },
+          "children": [
+            {
+              "path": "/courseManage/courseSetting/teacherTeamManage",
+              "name": "courseManageTeacherTeamManage",
+              "component": "/courseManage/courseSetting/teacherTeamManage/index",
+              "meta": {
+                "icon": "User",
+                "title": "教师团队管理",
+                "isLink": "",
+                "isHide": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true
+              }
+            },
+            {
+              "path": "/courseManage/courseSetting/baseInfo",
+              "name": "courseManageBaseInfo",
+              "component": "/courseManage/courseSetting/baseInfo/index",
+              "meta": {
+                "icon": "Document",
+                "title": "基本信息",
+                "isLink": "",
+                "isHide": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true
+              }
+            },
+            {
+              "path": "/courseManage/courseSetting/scoreWeight",
+              "name": "courseManageScoreWeight",
+              "component": "/courseManage/courseSetting/scoreWeight/index",
+              "meta": {
+                "icon": "TrendCharts",
+                "title": "成绩权重",
+                "isLink": "",
+                "isHide": true,
+                "isFull": false,
+                "isAffix": false,
+                "isKeepAlive": true
+              }
+            }
+          ]
+        },
+        {
+          "path": "/courseManage/classActivity",
+          "name": "courseManageClassActivity",
+          "component": "/courseManage/classActivity/index",
+          "meta": {
+            "icon": "Calendar",
+            "title": "班级活动",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/classActivity/classManage/:id",
+          "name": "courseManageClassManage",
+          "component": "/courseManage/classActivity/classManage",
+          "meta": {
+            "icon": "Setting",
+            "title": "班级管理",
+            "activeMenu": "/courseManage/classActivity",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/training",
+          "name": "courseManageTraining",
+          "component": "/courseManage/training/index",
+          "meta": {
+            "icon": "DataBoard",
+            "title": "课程实训",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/training/action/:id",
+          "name": "courseManageTrainingAction",
+          "component": "/courseManage/training/action",
+          "meta": {
+            "icon": "EditPen",
+            "title": "实训操作",
+            "activeMenu": "/courseManage/training",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/homework",
+          "name": "courseManageHomework",
+          "component": "/courseManage/homework/index",
+          "meta": {
+            "icon": "EditPen",
+            "title": "作业",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/homework/action/:id",
+          "name": "courseManageHomeworkAction",
+          "component": "/courseManage/homework/action",
+          "meta": {
+            "icon": "EditPen",
+            "title": "作业操作",
+            "activeMenu": "/courseManage/homework",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/homework/preview/:id",
+          "name": "courseManageHomeworkPreview",
+          "component": "/courseManage/homework/preview",
+          "meta": {
+            "icon": "View",
+            "title": "作业预览",
+            "activeMenu": "/courseManage/homework",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/homework/review/:id",
+          "name": "courseManageHomeworkReview",
+          "component": "/courseManage/homework/review",
+          "meta": {
+            "icon": "EditPen",
+            "title": "作业批阅",
+            "activeMenu": "/courseManage/homework",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/classExercise",
+          "name": "courseManageClassExercise",
+          "component": "/courseManage/classExercise/index",
+          "meta": {
+            "icon": "Edit",
+            "title": "课堂练习",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/classExercise/action/:id",
+          "name": "courseManageClassExerciseAction",
+          "component": "/courseManage/classExercise/action",
+          "meta": {
+            "icon": "EditPen",
+            "title": "课堂练习操作",
+            "activeMenu": "/courseManage/classExercise",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": false
+          }
+        },
+        {
+          "path": "/courseManage/courseCheckIn",
+          "name": "courseManageCourseCheckIn",
+          "component": "/courseManage/courseCheckIn/index",
+          "meta": {
+            "icon": "CircleCheck",
+            "title": "课程签到",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/courseCheckIn/detail/:id",
+          "name": "courseManageCheckInDetail",
+          "component": "/courseManage/courseCheckIn/detail",
+          "meta": {
+            "icon": "DataBoard",
+            "title": "签到详情",
+            "activeMenu": "/courseManage/courseCheckIn",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/questionBank",
+          "name": "courseManageQuestionBank",
+          "component": "/courseManage/questionBank/index",
+          "meta": {
+            "icon": "Collection",
+            "title": "课程题库",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/training/detail/:id",
+          "name": "courseManageTrainingDetail",
+          "component": "/courseManage/training/detail",
+          "meta": {
+            "icon": "DataBoard",
+            "title": "实训详情",
+            "activeMenu": "/courseManage/training",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/training/detail/:id/student/:studentId",
+          "name": "courseManageTrainingStudent",
+          "component": "/courseManage/training/student",
+          "meta": {
+            "icon": "User",
+            "title": "学生实训情况",
+            "activeMenu": "/courseManage/training",
+            "isLink": "",
+            "isHide": true,
+            "isCourseHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/courseManage/materials",
+          "name": "courseManageMaterials",
+          "component": "/courseManage/materials/index",
+          "meta": {
+            "icon": "Folder",
+            "title": "资料",
+            "isLink": "",
+            "isHide": true,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/auth",
+      "name": "auth",
+      "redirect": "/auth/menu",
+      "meta": {
+        "icon": "Lock",
+        "title": "权限管理",
+        "isLink": "",
+        "isHide": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/auth/menu",
+          "name": "authMenu",
+          "component": "/auth/menu/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "菜单权限",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/auth/button",
+          "name": "authButton",
+          "component": "/auth/button/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "按钮权限",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/system",
+      "name": "system",
+      "redirect": "/system/accountManage",
+      "meta": {
+        "icon": "Tools",
+        "title": "系统管理",
+        "isLink": "",
+        "isHide": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      },
+      "children": [
+        {
+          "path": "/system/accountManage",
+          "name": "accountManage",
+          "component": "/system/accountManage/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "账号管理",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/roleManage",
+          "name": "roleManage",
+          "component": "/system/roleManage/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "角色管理",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/menuMange",
+          "name": "menuMange",
+          "component": "/system/menuMange/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "菜单管理",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/departmentManage",
+          "name": "departmentManage",
+          "component": "/system/departmentManage/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "部门管理",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/dictManage",
+          "name": "dictManage",
+          "component": "/system/dictManage/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "字典管理",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/timingTask",
+          "name": "timingTask",
+          "component": "/system/timingTask/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "定时任务",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        },
+        {
+          "path": "/system/systemLog",
+          "name": "systemLog",
+          "component": "/system/systemLog/index",
+          "meta": {
+            "icon": "Menu",
+            "title": "系统日志",
+            "isLink": "",
+            "isHide": false,
+            "isFull": false,
+            "isAffix": false,
+            "isKeepAlive": true
+          }
+        }
+      ]
+    },
+    {
+      "path": "/about/index",
+      "name": "about",
+      "component": "/about/index",
+      "meta": {
+        "icon": "InfoFilled",
+        "title": "关于项目",
+        "isLink": "",
+        "isHide": false,
+        "isFull": false,
+        "isAffix": false,
+        "isKeepAlive": true
+      }
+    }
+  ],
+  "msg": "成功"
+}

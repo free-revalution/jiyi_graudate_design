@@ -1,0 +1,74 @@
+[
+    {
+        "id": 1,
+        "index": "01",
+        "label": "嵌入式Linux系统内核",
+        "content": "<p><img src=\"https://cube.elemecdn.com/6/94/4d3ea53c084bad6931a56d5158a48jpeg.jpeg\" alt=\"\" data-href=\"\" style=\"width: 50%;\"/></p><h2>嵌入式Linux系统内核</h2><p><strong>实训目标：</strong>理解Linux内核的基本结构，掌握嵌入式环境下内核的配置、编译和移植方法。</p><p><strong>实训内容：</strong></p><ol><li>Linux内核源代码结构分析</li><li>内核配置选项详解（menuconfig）</li><li>交叉编译环境的搭建与配置</li><li>内核镜像的编译与生成（zImage, uImage）</li><li>设备树（Device Tree）的配置与使用</li><li>内核模块的编写与加载</li></ol><p><strong>实训环境：</strong></p><ul><li>开发主机：Ubuntu 20.04 LTS</li><li>目标平台：ARM Cortex-A53开发板</li><li>交叉工具链：arm-linux-gnueabihf-gcc 9.3.0</li><li>内核版本：Linux 5.10</li></ul>",
+        "children": [
+            {
+                "id": 11,
+                "index": "1.1",
+                "label": "嵌入式系统启动流程分析",
+                "content": "<h3>实训1.1：嵌入式系统启动流程分析</h3><p><strong>实训目的：</strong>掌握从处理器上电到Linux内核启动完成的完整流程。</p><pre><code>// 典型启动流程示例\nBootROM → Bootloader(UBoot) → Kernel → RootFS → Init\n     ↓           ↓           ↓         ↓        ↓\n 固化ROM     引导加载    内核初始化  挂载根文件系统 启动第一个进程</code></pre><p><strong>关键步骤：</strong></p><ol><li>BootROM阶段：处理器内部固化的引导代码</li><li>U-Boot阶段：初始化硬件，加载内核和设备树</li><li>内核阶段：解压缩，设备树解析，驱动初始化</li><li>用户空间：init进程启动，执行初始化脚本</li></ol><p><strong>调试技巧：</strong>通过串口输出分析各阶段启动信息。</p>"
+            },
+            {
+                "id": 12,
+                "index": "1.2",
+                "label": "内核配置与裁剪",
+                "content": "<h3>实训1.1：嵌入式系统启动流程分析</h3><p><strong>实训目的：</strong>掌握从处理器上电到Linux内核启动完成的完整流程。</p><pre><code>// 典型启动流程示例\nBootROM → Bootloader(UBoot) → Kernel → RootFS → Init\n     ↓           ↓           ↓         ↓        ↓\n 固化ROM     引导加载    内核初始化  挂载根文件系统 启动第一个进程</code></pre><p><strong>关键步骤：</strong></p><ol><li>BootROM阶段：处理器内部固化的引导代码</li><li>U-Boot阶段：初始化硬件，加载内核和设备树</li><li>内核阶段：解压缩，设备树解析，驱动初始化</li><li>用户空间：init进程启动，执行初始化脚本</li></ol><p><strong>调试技巧：</strong>通过串口输出分析各阶段启动信息。</p>"
+            },
+            {
+                "id": 13,
+                "index": "1.3",
+                "label": "设备树（Device Tree）实战",
+                "content": "<h3>实训1.3：设备树（Device Tree）实战</h3><p><strong>实训内容：</strong>为自定义硬件平台编写设备树源文件。</p><pre><code>/dts-v1/;\n/ {\n    compatible = \"mycompany,myboard\";\n    model = \"My Custom Board\";\n    \n    memory@80000000 {\n        device_type = \"memory\";\n        reg = &lt;0x80000000 0x20000000&gt;;\n    };\n    \n    cpus {\n        cpu@0 {\n            compatible = \"arm,cortex-a53\";\n            device_type = \"cpu\";\n            reg = &lt;0&gt;;\n            clock-frequency = &lt;1200000000&gt;;\n        };\n    };\n};</code></pre><p><strong>编译与调试：</strong></p><pre><code># 编译设备树\ndtc -I dts -O dtb -o myboard.dtb myboard.dts\n\n# 反编译查看\ndtc -I dtb -O dts -o myboard.dts myboard.dtb</code></pre>"
+            }
+        ]
+    },
+    {
+        "id": 2,
+        "index": "02",
+        "label": "专题-GCC、交叉工具链和Makefile",
+        "content": "<h2>GCC、交叉工具链和Makefile</h2><p><strong>实训目标：</strong>掌握嵌入式开发中编译工具链的使用，熟练编写Makefile管理复杂项目。</p><p><strong>知识要点：</strong></p><ul><li>GCC编译器选项优化</li><li>交叉工具链的构建与配置</li><li>静态库与动态库的创建与使用</li><li>自动化构建工具Makefile编写</li><li>CMake跨平台构建系统</li></ul>",
+        "children": [
+            {
+                "id": 21,
+                "index": "2.1",
+                "label": "GCC编译器深度使用",
+                "content": "<h3>实训2.1：GCC编译器深度使用</h3><p><strong>实训内容：</strong>掌握GCC编译器的各种选项和优化技巧。</p><pre><code># 基本编译流程\ngcc -E hello.c -o hello.i    # 预处理\ngcc -S hello.i -o hello.s    # 编译\ngcc -c hello.s -o hello.o    # 汇编\ngcc hello.o -o hello         # 链接\n\n# 常用优化选项\ngcc -O2 -march=native -mtune=native -ffast-math\n\n# 调试信息\ngcc -g -ggdb3 -O0\n\n# 警告选项\ngcc -Wall -Wextra -Werror -Wpedantic</code></pre><p><strong>高级技巧：</strong></p><ol><li>使用<code>-save-temps</code>保留中间文件</li><li>通过<code>-M</code>系列选项生成依赖关系</li><li>使用<code>-fPIC</code>编译位置无关代码</li><li>链接时优化（LTO）的使用</li></ol>"
+            },
+            {
+                "id": 22,
+                "index": "2.2",
+                "label": "交叉工具链构建",
+                "content": "<h3>实训2.2：交叉工具链构建</h3><p><strong>实训任务：</strong>从源码构建ARM平台的交叉编译工具链。</p><p><strong>构建步骤：</strong></p><pre><code># 1. 下载源代码\nwget https://ftp.gnu.org/gnu/binutils/binutils-2.37.tar.xz\nwget https://ftp.gnu.org/gnu/gcc/gcc-11.2.0/gcc-11.2.0.tar.xz\n\n# 2. 配置环境变量\nexport TARGET=arm-linux-gnueabihf\nexport PREFIX=/opt/cross-toolchain\nexport PATH=$PREFIX/bin:$PATH\n\n# 3. 构建binutils\nmkdir build-binutils && cd build-binutils\n../binutils-2.37/configure --target=$TARGET --prefix=$PREFIX\nmake -j$(nproc) && sudo make install</code></pre><p><strong>验证工具链：</strong></p><pre><code># 检查工具链版本\narm-linux-gnueabihf-gcc --version\narm-linux-gnueabihf-ld --version</code></pre>"
+            },
+            {
+                "id": 23,
+                "index": "2.3",
+                "label": "Makefile高级编程",
+                "content": "<h3>实训2.3：Makefile高级编程</h3><p><strong>实训要求：</strong>编写一个支持多目录、多目标、自动依赖的复杂Makefile。</p><pre><code># 项目结构示例\nproject/\n├── Makefile\n├── include/\n│   ├── common.h\n│   └── utils.h\n├── src/\n│   ├── main.c\n│   ├── module1.c\n│   └── module2.c\n└── lib/</code></pre><p><strong>高级Makefile示例：</strong></p><pre><code># 项目配置\nPROJECT_NAME := my_embedded_project\nTARGET := $(PROJECT_NAME).elf\nCROSS_COMPILE := arm-linux-gnueabihf-\nCC := $(CROSS_COMPILE)gcc\n\n# 目录定义\nSRC_DIR := src lib/thirdparty\nINC_DIR := include\nBUILD_DIR := build\n\n# 自动查找源文件\nSRCS := $(shell find $(SRC_DIR) -name '*.c')\nOBJS := $(SRCS:%.c=$(BUILD_DIR)/%.o)\n\n# 编译选项\nCFLAGS := -Wall -Wextra -Werror -O2 -g\nCFLAGS += $(addprefix -I,$(INC_DIR))\n\n# 模式规则\n$(BUILD_DIR)/%.o: %.c\n\t@mkdir -p $(@D)\n\t$(CC) $(CFLAGS) -c $&lt; -o $@\n\n# 链接目标\n$(BUILD_DIR)/$(TARGET): $(OBJS)\n\t$(CC) $(CFLAGS) $^ -o $@\n\nclean:\n\trm -rf $(BUILD_DIR)\n\n.PHONY: all clean</code></pre>"
+            },
+            {
+                "id": 24,
+                "index": "2.4",
+                "label": "CMake交叉编译配置",
+                "content": "<h3>实训2.4：CMake交叉编译配置</h3><p><strong>实训内容：</strong>使用CMake管理嵌入式跨平台项目。</p><pre><code># CMakeLists.txt示例\ncmake_minimum_required(VERSION 3.16)\nproject(EmbeddedProject LANGUAGES C CXX ASM)\n\n# 交叉编译工具链文件\nset(CMAKE_SYSTEM_NAME Linux)\nset(CMAKE_SYSTEM_PROCESSOR arm)\n\nset(CMAKE_C_COMPILER arm-linux-gnueabihf-gcc)\nset(CMAKE_CXX_COMPILER arm-linux-gnueabihf-g++)\n\n# 项目配置\nadd_definitions(-DEMBEDDED_SYSTEM)\nset(CMAKE_C_STANDARD 11)\n\n# 添加可执行文件\nadd_executable(${PROJECT_NAME}\n    src/main.c\n    src/hardware/uart.c\n    src/drivers/gpio.c\n)\n\n# 包含目录\ntarget_include_directories(${PROJECT_NAME} PRIVATE\n    include\n    lib/thirdparty/include\n)\n\n# 链接库\ntarget_link_libraries(${PROJECT_NAME} PRIVATE\n    m\n    pthread\n)</code></pre><p><strong>使用方式：</strong></p><pre><code># 配置构建\nmkdir build && cd build\ncmake .. -DCMAKE_TOOLCHAIN_FILE=../toolchain-arm.cmake\n\n# 编译\nmake -j$(nproc)</code></pre>"
+            }
+        ]
+    },
+    {
+        "id": 3,
+        "index": "03",
+        "label": "嵌入式系统驱动开发",
+        "content": "<h2>嵌入式系统驱动开发</h2><p><strong>实训目标：</strong>掌握Linux内核驱动开发框架，能够编写字符设备、平台设备等常见驱动程序。</p><p><strong>核心技能：</strong></p><ul><li>Linux设备模型</li><li>字符设备驱动开发</li><li>平台设备与平台驱动</li><li>设备树与驱动的绑定</li><li>中断处理与延迟机制</li><li>内核同步机制</li></ul>",
+        "children": [
+            {
+                "id": 31,
+                "index": "3.1",
+                "label": "字符设备驱动开发",
+                "content": "<h3>实训3.1：字符设备驱动开发</h3><p><strong>实训任务：</strong>编写一个简单的LED字符设备驱动程序。</p><pre><code>// LED驱动示例代码\n#include &lt;linux/module.h&gt;\n#include &lt;linux/fs.h&gt;\n#include &lt;linux/cdev.h&gt;\n#include &lt;linux/gpio.h&gt;\n\n#define DEVICE_NAME \"my_led\"\n#define LED_GPIO 23\n\nstatic dev_t dev_num;\nstatic struct cdev my_cdev;\nstatic int led_state = 0;\n\nstatic int led_open(struct inode *inode, struct file *file)\n{\n    pr_info(\"LED device opened\\n\");\n    gpio_request(LED_GPIO, \"led_gpio\");\n    gpio_direction_output(LED_GPIO, 0);\n    return 0;\n}\n\nstatic ssize_t led_write(struct file *file, const char __user *buf,\n                         size_t len, loff_t *ppos)\n{\n    char val;\n    if (copy_from_user(&amp;val, buf, 1))\n        return -EFAULT;\n    \n    led_state = (val != '0');\n    gpio_set_value(LED_GPIO, led_state);\n    return 1;\n}\n\nstatic struct file_operations led_fops = {\n    .owner = THIS_MODULE,\n    .open = led_open,\n    .write = led_write,\n};\n\nmodule_init(led_init);\nmodule_exit(led_exit);\n\nMODULE_LICENSE(\"GPL\");\nMODULE_AUTHOR(\"Embedded Training\");\nMODULE_DESCRIPTION(\"Simple LED Driver\");</code></pre><p><strong>测试程序：</strong></p><pre><code>// test_led.c 用户空间测试程序\n#include &lt;stdio.h&gt;\n#include &lt;fcntl.h&gt;\n#include &lt;unistd.h&gt;\n\nint main()\n{\n    int fd = open(\"/dev/my_led\", O_RDWR);\n    if (fd &lt; 0) {\n        perror(\"open\");\n        return 1;\n    }\n    \n    write(fd, \"1\", 1);  // 打开LED\n    sleep(2);\n    write(fd, \"0\", 1);  // 关闭LED\n    close(fd);\n    return 0;\n}</code></pre>"
+            }
+        ]
+    }
+]
