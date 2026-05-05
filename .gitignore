@@ -9,7 +9,5 @@ dist/
 .env.*.local
 uploads/
 *.docx
-前端项目组件分析报告.md
-启动问题.md
-报错.md
-前端项目组件分析报告.md
+*.md
+!.gitlab-ci.yml
