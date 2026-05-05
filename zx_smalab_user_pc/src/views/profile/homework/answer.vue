@@ -49,7 +49,7 @@
             <div v-for="(q, index) in singleQuestions" :key="q.id" class="question-item">
               <div class="question-num">{{ index + 1 }}.</div>
               <div class="question-content">
-                <div class="question-text">{{ q.title }}</div>
+                <div class="question-text" v-html="q.title"></div>
                 <el-radio-group v-model="answers[q.id]" class="options-group">
                   <el-radio v-for="opt in q.options" :key="opt.key" :value="opt.key" class="option-item"> {{ opt.key }}. {{ opt.value }} </el-radio>
                 </el-radio-group>
@@ -68,7 +68,7 @@
             <div v-for="(q, index) in multipleQuestions" :key="q.id" class="question-item">
               <div class="question-num">{{ index + 1 }}.</div>
               <div class="question-content">
-                <div class="question-text">{{ q.title }}</div>
+                <div class="question-text" v-html="q.title"></div>
                 <el-checkbox-group v-model="answers[q.id]" class="options-group">
                   <el-checkbox v-for="opt in q.options" :key="opt.key" :value="opt.key" class="option-item"> {{ opt.key }}. {{ opt.value }} </el-checkbox>
                 </el-checkbox-group>
@@ -87,7 +87,7 @@
             <div v-for="(q, index) in judgeQuestions" :key="q.id" class="question-item">
               <div class="question-num">{{ index + 1 }}.</div>
               <div class="question-content">
-                <div class="question-text">{{ q.title }}</div>
+                <div class="question-text" v-html="q.title"></div>
                 <el-radio-group v-model="answers[q.id]" class="options-group">
                   <el-radio value="true" class="option-item">正确</el-radio>
                   <el-radio value="false" class="option-item">错误</el-radio>
@@ -107,7 +107,7 @@
             <div v-for="(q, index) in fillQuestions" :key="q.id" class="question-item">
               <div class="question-num">{{ index + 1 }}.</div>
               <div class="question-content">
-                <div class="question-text">{{ q.title }}</div>
+                <div class="question-text" v-html="q.title"></div>
                 <el-input v-model="answers[q.id]" placeholder="请输入答案" style="max-width: 400px" />
               </div>
             </div>

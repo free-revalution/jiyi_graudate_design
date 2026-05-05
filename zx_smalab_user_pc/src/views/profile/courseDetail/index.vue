@@ -251,7 +251,7 @@
                   </div>
                   <div v-if="homeworkQuestions.length > 0">
                     <div v-for="(q, idx) in homeworkQuestions" :key="q.id" class="hw-question">
-                      <div class="hw-q-title">{{ idx + 1 }}. {{ q.title }}</div>
+                      <div class="hw-q-title" v-html="idx + 1 + '. ' + q.title"></div>
                       <div v-if="q.type !== 'fill' && q.options" class="hw-q-options">
                         <label v-for="opt in q.options" :key="opt.key" class="hw-q-option">
                           <input v-if="q.type === 'multiple'" type="checkbox" :value="opt.key" v-model="hwAnswers[q.id]" />

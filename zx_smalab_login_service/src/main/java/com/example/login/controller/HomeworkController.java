@@ -20,11 +20,11 @@ import java.util.HashMap;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
-import java.util.HashMap;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import com.fasterxml.jackson.core.type.TypeReference;
 
 /**
  * 作业管理控制器
@@ -100,8 +100,33 @@ public class HomeworkController {
             @PathVariable Long courseId,
             @PathVariable Long id) {
         Homework homework = homeworkService.getHomeworkById(id);
-        List<HomeworkQuestion> questions = homeworkQuestionRepository
+        List<HomeworkQuestion> rawQuestions = homeworkQuestionRepository
                 .findByHomeworkIdAndIsDeletedOrderBySortOrder(id, 0);
+        // Parse options from JSON string to object list
+        List<Map<String, Object>> questions = new ArrayList<>();
+        for (HomeworkQuestion q : rawQuestions) {
+            Map<String, Object> qMap = new HashMap<>();
+            qMap.put("id", q.getId());
+            qMap.put("type", q.getType());
+            qMap.put("content", q.getContent());
+            qMap.put("answer", q.getAnswer());
+            qMap.put("analysis", q.getAnalysis());
+            qMap.put("difficulty", q.getDifficulty());
+            qMap.put("sortOrder", q.getSortOrder());
+            // Parse options JSON string to list
+            if (q.getOptions() != null && !q.getOptions().isEmpty()) {
+                try {
+                    List<Map<String, String>> opts = objectMapper.readValue(q.getOptions(),
+                            new TypeReference<List<Map<String, String>>>() {});
+                    qMap.put("options", opts);
+                } catch (Exception e) {
+                    qMap.put("options", List.of());
+                }
+            } else {
+                qMap.put("options", List.of());
+            }
+            questions.add(qMap);
+        }
         Map<String, Object> result = new HashMap<>();
         result.put("id", homework.getId());
         result.put("name", homework.getName());
