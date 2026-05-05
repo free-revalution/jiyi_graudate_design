@@ -110,6 +110,7 @@ CREATE TABLE IF NOT EXISTS course_class (
   student_count INT DEFAULT 0,
   created_time DATETIME DEFAULT CURRENT_TIMESTAMP,
   is_deleted INT DEFAULT 0,
+  UNIQUE KEY uk_course_name(course_id, name),
   INDEX idx_course(course_id)
 );
 
@@ -591,14 +592,14 @@ INSERT IGNORE INTO course_teacher (course_id, name, role, work_no, department, u
 -- ============================================================
 -- Seed: Course Classes (for course 1)
 -- ============================================================
-INSERT IGNORE INTO course_class (course_id, name, student_count) VALUES
-(1, '2024级软件工程1班', 45),
-(1, '2024级计算机科学2班', 42),
-(1, '2024级软件工程2班', 48),
-(1, '2024级人工智能1班', 35);
+INSERT IGNORE INTO course_class (id, course_id, name, student_count) VALUES
+(1, 1, '2024级软件工程1班', 0),
+(2, 1, '2024级计算机科学2班', 0),
+(3, 1, '2024级软件工程2班', 0),
+(4, 1, '2024级人工智能1班', 0);
 
 -- ============================================================
--- Seed: Course Students (class_id=1, course_id=1)
+-- Seed: Course Students (class 1 = 2024级软件工程1班)
 -- ============================================================
 INSERT IGNORE INTO course_student (class_id, course_id, user_id, student_id, name, department, major, class_name) VALUES
 (1, 1, 3001, '20240001', '李同学', '计算机学院', '软件工程', '2024级软件工程1班'),
