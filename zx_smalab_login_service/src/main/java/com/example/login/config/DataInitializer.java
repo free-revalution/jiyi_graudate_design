@@ -28,10 +28,16 @@ public class DataInitializer implements CommandLineRunner {
         initUser(1001L, "admin", "student_id", encodedPw);
 
         initUser(2001L, "T001", "teacher_id", encodedPw);
+        initUser(2001L, "13800000001", "phone", encodedPw);
+
         initUser(2002L, "T002", "teacher_id", encodedPw);
+        initUser(2002L, "13800000002", "phone", encodedPw);
 
         initUser(3001L, "20240001", "student_id", encodedPw);
-        initUser(3001L, "20240002", "student_id", encodedPw);
+        initUser(3001L, "13900000001", "phone", encodedPw);
+
+        initUser(3002L, "20240002", "student_id", encodedPw);
+        initUser(3002L, "13900000002", "phone", encodedPw);
 
         log.info("测试用户数据初始化完成");
     }

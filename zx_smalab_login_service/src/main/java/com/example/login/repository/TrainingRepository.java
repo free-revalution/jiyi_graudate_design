@@ -16,4 +16,6 @@ public interface TrainingRepository extends JpaRepository<Training, Long> {
     List<Training> findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(Long courseId, Integer isDeleted);
 
     Optional<Training> findByIdAndIsDeleted(Long id, Integer isDeleted);
+
+    long countByIsDeleted(Integer isDeleted);
 }

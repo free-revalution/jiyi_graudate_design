@@ -2,7 +2,10 @@ package com.example.login.service;
 
 import com.example.login.dto.response.PageResult;
 import com.example.login.entity.Homework;
+import com.example.login.entity.HomeworkAnswer;
 import com.example.login.entity.HomeworkQuestion;
+
+import java.math.BigDecimal;
 
 import java.util.List;
 import java.util.Map;
@@ -29,4 +32,8 @@ public interface HomeworkService {
     List<Map<String, Object>> getQuestionsForUser(Long homeworkId);
 
     void submitHomework(Long homeworkId, Long userId, Map<String, Object> answers);
+
+    List<HomeworkAnswer> getHomeworkAnswers(Long homeworkId);
+
+    void gradeHomework(Long homeworkId, Long userId, BigDecimal score);
 }

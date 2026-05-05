@@ -31,13 +31,15 @@ public class LoginController {
      * @param request      HTTP请求
      * @return 登录响应
      */
-    @PostMapping("/password/login")
+    @PostMapping("/login")
     public ResponseEntity<ApiResponse<LoginResponse>> login(
             @Valid @RequestBody LoginRequest loginRequest,
             HttpServletRequest request) {
-        
+
+        log.info("【登录请求】phone={}, userType={}, ip={}", loginRequest.getPhone(), loginRequest.getUserType(), getClientIp(request));
         String clientIp = getClientIp(request);
         LoginResponse response = loginService.login(loginRequest, clientIp);
+        log.info("【登录成功】userId={}, token已生成", response.getUser_id());
         return ResponseEntity.ok(ApiResponse.success("登录成功", response));
     }
 

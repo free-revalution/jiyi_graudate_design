@@ -8,7 +8,9 @@ import com.example.login.dto.request.RegisterRequest;
 import com.example.login.dto.response.LoginResponse;
 import com.example.login.entity.UserAuthorize;
 import com.example.login.exception.BusinessException;
+import com.example.login.entity.UserInfo;
 import com.example.login.repository.UserAuthorizeRepository;
+import com.example.login.repository.UserInfoRepository;
 import com.example.login.service.LoginService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -29,6 +31,7 @@ import java.util.UUID;
 public class LoginServiceImpl implements LoginService {
 
     private final UserAuthorizeRepository userAuthorizeRepository;
+    private final UserInfoRepository userInfoRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtConfig jwtConfig;
     private final JwtTokenProvider jwtTokenProvider;
@@ -43,7 +46,13 @@ public class LoginServiceImpl implements LoginService {
 
         UserAuthorize userAuthorize = userAuthorizeRepository
                 .findByIdentifierAndIdentityType(loginRequest.getPhone(), identityType)
-                .orElseThrow(() -> new BusinessException(401, "用户名或密码错误"));
+                .orElse(null);
+
+        if (userAuthorize == null) {
+            userAuthorize = userAuthorizeRepository
+                    .findByIdentifierAndIdentityType(loginRequest.getPhone(), "phone")
+                    .orElseThrow(() -> new BusinessException(401, "用户名或密码错误"));
+        }
 
         if ("2".equals(userAuthorize.getUserStatus())) {
             throw new BusinessException(403, "用户已被禁用");
@@ -72,7 +81,7 @@ public class LoginServiceImpl implements LoginService {
         return LoginResponse.builder()
                 .access_token(accessToken)
                 .refresh_token(refreshToken)
-                .token(refreshToken)
+                .token(accessToken)
                 .expires_in(expiresIn)
                 .user_id(userAuthorize.getUserId())
                 .user_status(userAuthorize.getUserStatus())
@@ -103,6 +112,7 @@ public class LoginServiceImpl implements LoginService {
 
         return LoginResponse.builder()
                 .access_token(accessToken)
+                .token(accessToken)
                 .refresh_token(refreshToken)
                 .expires_in(expiresIn)
                 .user_id(userAuthorize.getUserId())
@@ -160,6 +170,18 @@ public class LoginServiceImpl implements LoginService {
                 .build();
 
         userAuthorizeRepository.save(userAuthorize);
+
+        UserInfo userInfo = UserInfo.builder()
+                .userId(maxUserId)
+                .userType(registerRequest.getUserType() != null ? registerRequest.getUserType() : "student")
+                .userName(registerRequest.getUsername())
+                .tel(registerRequest.getPhone())
+                .school(registerRequest.getSchool())
+                .createdTime(new Date())
+                .modifiedTime(new Date())
+                .isDeleted(0)
+                .build();
+        userInfoRepository.save(userInfo);
 
         log.info("用户注册成功: userId={}, identifier={}", maxUserId, registerRequest.getUsername());
     }

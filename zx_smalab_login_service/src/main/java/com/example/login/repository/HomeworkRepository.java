@@ -16,4 +16,6 @@ public interface HomeworkRepository extends JpaRepository<Homework, Long> {
     List<Homework> findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(Long courseId, Integer isDeleted);
 
     Optional<Homework> findByIdAndIsDeleted(Long id, Integer isDeleted);
+
+    long countByIsDeleted(Integer isDeleted);
 }

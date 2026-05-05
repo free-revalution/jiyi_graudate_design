@@ -20,6 +20,8 @@ public interface CourseStudentRepository extends JpaRepository<CourseStudent, Lo
 
     boolean existsByCourseIdAndUserIdAndIsDeleted(Long courseId, Long userId, Integer isDeleted);
 
+    List<CourseStudent> findByCourseIdAndUserIdAndIsDeleted(Long courseId, Long userId, Integer isDeleted);
+
     long countByClassIdAndIsDeleted(Long classId, Integer isDeleted);
 
     long countByCourseIdAndIsDeleted(Long courseId, Integer isDeleted);

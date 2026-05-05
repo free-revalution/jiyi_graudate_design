@@ -16,4 +16,6 @@ public interface ClassExerciseRepository extends JpaRepository<ClassExercise, Lo
     List<ClassExercise> findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(Long courseId, Integer isDeleted);
 
     Optional<ClassExercise> findByIdAndIsDeleted(Long id, Integer isDeleted);
+
+    long countByIsDeleted(Integer isDeleted);
 }

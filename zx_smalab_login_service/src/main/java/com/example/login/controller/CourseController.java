@@ -13,6 +13,7 @@ import com.example.login.entity.CourseTeacher;
 import com.example.login.entity.CourseTerm;
 import com.example.login.service.CourseService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -21,6 +22,7 @@ import org.springframework.web.bind.annotation.*;
 /**
  * 课程管理控制器
  */
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -36,12 +38,15 @@ public class CourseController {
             @RequestParam(defaultValue = "10") int limit,
             @RequestParam(required = false) String name,
             @RequestParam(required = false) String status) {
+        log.info("【课程列表】page={}, limit={}, name={}, status={}", page, limit, name, status);
         PageResult<Course> result = courseService.getCourseList(page, limit, name, status);
+        log.info("【课程列表】返回 {} 条记录，共 {} 条", result.getList().size(), result.getTotal());
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 
     @PostMapping("/course")
     public ResponseEntity<ApiResponse<Course>> createCourse(@RequestBody CourseRequest request) {
+        log.info("【创建课程】name={}, teacherName={}, creator={}", request.getName(), request.getTeacherName(), getCurrentUserId());
         Course course = Course.builder()
                 .courseCode(request.getCourseCode())
                 .name(request.getName())
@@ -55,6 +60,7 @@ public class CourseController {
                 .totalHours(request.getTotalHours())
                 .build();
         Course created = courseService.createCourse(course, getCurrentUserId());
+        log.info("【创建课程】成功，课程ID={}, status=draft", created.getId());
         return ResponseEntity.ok(ApiResponse.success("创建成功", created));
     }
 

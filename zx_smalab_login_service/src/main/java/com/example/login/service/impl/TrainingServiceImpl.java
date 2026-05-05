@@ -34,11 +34,12 @@ public class TrainingServiceImpl implements TrainingService {
     private final TrainingStageScoreRepository trainingStageScoreRepository;
 
     @Override
-    public PageResult<Training> getTrainingList(Long courseId, int page, int limit, String name) {
+    public PageResult<Training> getTrainingList(Long courseId, int page, int limit, String name, String status) {
         List<Training> all = trainingRepository.findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(courseId, 0);
 
         List<Training> filtered = all.stream()
                 .filter(t -> name == null || name.isEmpty() || t.getName().contains(name))
+                .filter(t -> status == null || status.isEmpty() || status.equals(t.getStatus()))
                 .collect(Collectors.toList());
 
         long total = filtered.size();
@@ -46,7 +47,7 @@ public class TrainingServiceImpl implements TrainingService {
         List<Training> list = filtered.stream()
                 .skip(start)
                 .limit(limit)
-                .toList();
+                .collect(Collectors.toList());
 
         return PageResult.<Training>builder()
                 .list(list)
@@ -60,7 +61,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Transactional
     public Training createTraining(Long courseId, Training training, Long creatorId) {
         training.setCourseId(courseId);
-        training.setStatus("draft");
+        training.setStatus("未发布");
         training.setPendingCount(0);
         training.setSubmittedCount(0);
         training.setUnsubmittedCount(0);
@@ -103,7 +104,7 @@ public class TrainingServiceImpl implements TrainingService {
     @Transactional
     public void publishTraining(Long id) {
         Training training = getTrainingById(id);
-        training.setStatus("published");
+        training.setStatus("进行中");
         training.setModifiedTime(new Date());
         trainingRepository.save(training);
     }

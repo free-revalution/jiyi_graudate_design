@@ -39,8 +39,9 @@ public class TrainingController {
             @PathVariable Long courseId,
             @RequestParam(defaultValue = "1") int page,
             @RequestParam(defaultValue = "10") int limit,
-            @RequestParam(required = false) String name) {
-        PageResult<Training> result = trainingService.getTrainingList(courseId, page, limit, name);
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String status) {
+        PageResult<Training> result = trainingService.getTrainingList(courseId, page, limit, name, status);
         return ResponseEntity.ok(ApiResponse.success(result));
     }
 

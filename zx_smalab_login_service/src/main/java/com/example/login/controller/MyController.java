@@ -4,6 +4,7 @@ import com.example.login.dto.response.ApiResponse;
 import com.example.login.entity.*;
 import com.example.login.repository.*;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.stream.Collectors;
 
+@Slf4j
 @RestController
 @RequestMapping("/api")
 @RequiredArgsConstructor
@@ -24,6 +26,7 @@ public class MyController {
     private final CourseRepository courseRepository;
     private final CourseStudentRepository courseStudentRepository;
     private final CourseClassRepository courseClassRepository;
+    private final UserInfoRepository userInfoRepository;
     private final HomeworkRepository homeworkRepository;
     private final HomeworkAnswerRepository homeworkAnswerRepository;
     private final TrainingRepository trainingRepository;
@@ -78,8 +81,10 @@ public class MyController {
     }
 
     @PostMapping("/my/courses/{courseId}/enroll")
-    public ResponseEntity<ApiResponse<Void>> enrollCourse(@PathVariable Long courseId) {
+    public ResponseEntity<ApiResponse<Void>> enrollCourse(@PathVariable Long courseId,
+            @RequestBody(required = false) Map<String, Object> body) {
         Long userId = getCurrentUserId();
+        log.info("【选课】userId={}, courseId={}, body={}", userId, courseId, body);
 
         Course course = courseRepository.findByIdAndIsDeleted(courseId, 0)
                 .orElse(null);
@@ -91,20 +96,71 @@ public class MyController {
             return ResponseEntity.ok(ApiResponse.error(400, "已加入该课程"));
         }
 
-        List<CourseClass> classes = courseClassRepository.findByCourseIdAndIsDeleted(courseId, 0);
-        Long classId = classes.isEmpty() ? 0L : classes.get(0).getId();
+        final Long[] classIdHolder = { 0L };
+        if (body != null && body.get("classId") != null) {
+            classIdHolder[0] = Long.valueOf(body.get("classId").toString());
+        }
+        String className = "";
+        if (classIdHolder[0] > 0) {
+            CourseClass courseClass = courseClassRepository.findById(classIdHolder[0]).orElse(null);
+            if (courseClass == null || !courseClass.getCourseId().equals(courseId)) {
+                return ResponseEntity.ok(ApiResponse.error(400, "班级不存在"));
+            }
+            className = courseClass.getName();
+        }
 
-        CourseStudent student = CourseStudent.builder()
-                .courseId(courseId)
-                .classId(classId)
-                .userId(userId)
-                .joinTime(new Date())
-                .createdTime(new Date())
-                .isDeleted(0)
-                .build();
-        courseStudentRepository.save(student);
+        final String[] nameHolder = { "" };
+        userInfoRepository.findByUserId(userId).ifPresent(user -> nameHolder[0] = user.getUserName());
+
+        try {
+            CourseStudent student = CourseStudent.builder()
+                    .courseId(courseId)
+                    .classId(classIdHolder[0])
+                    .userId(userId)
+                    .name(nameHolder[0])
+                    .className(className)
+                    .joinTime(new Date())
+                    .createdTime(new Date())
+                    .isDeleted(0)
+                    .build();
+            courseStudentRepository.save(student);
+            if (classIdHolder[0] > 0) {
+                courseClassRepository.findById(classIdHolder[0]).ifPresent(cls -> {
+                    cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classIdHolder[0], 0));
+                    courseClassRepository.save(cls);
+                });
+            }
+        } catch (org.springframework.dao.DataIntegrityViolationException e) {
+            log.warn("【选课】重复选课: userId={}, courseId={}, classId={}", userId, courseId, classIdHolder[0]);
+            return ResponseEntity.ok(ApiResponse.error(400, "已加入该课程"));
+        }
 
         return ResponseEntity.ok(ApiResponse.success("加入成功", null));
+    }
+
+    @DeleteMapping("/my/courses/{courseId}/unenroll")
+    public ResponseEntity<ApiResponse<Void>> unenrollCourse(@PathVariable Long courseId) {
+        Long userId = getCurrentUserId();
+        log.info("【退课】userId={}, courseId={}", userId, courseId);
+
+        CourseStudent enrollment = courseStudentRepository
+                .findByCourseIdAndUserIdAndIsDeleted(courseId, userId, 0)
+                .stream().findFirst().orElse(null);
+        if (enrollment == null) {
+            return ResponseEntity.ok(ApiResponse.error(404, "未加入该课程"));
+        }
+
+        Long classId = enrollment.getClassId();
+        enrollment.setIsDeleted(1);        courseStudentRepository.save(enrollment);
+
+        if (classId != null && classId > 0) {
+            courseClassRepository.findById(classId).ifPresent(cls -> {
+                cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(classId, 0));
+                courseClassRepository.save(cls);
+            });
+        }
+
+        return ResponseEntity.ok(ApiResponse.success("退课成功", null));
     }
 
     @GetMapping("/my/course/{courseId}")

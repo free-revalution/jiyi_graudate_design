@@ -207,7 +207,11 @@ public class CourseServiceImpl implements CourseService {
 
     @Override
     public List<CourseClass> getClassesByCourseId(Long courseId) {
-        return courseClassRepository.findByCourseIdAndIsDeleted(courseId, 0);
+        List<CourseClass> classes = courseClassRepository.findByCourseIdAndIsDeleted(courseId, 0);
+        for (CourseClass cls : classes) {
+            cls.setStudentCount((int) courseStudentRepository.countByClassIdAndIsDeleted(cls.getId(), 0));
+        }
+        return classes;
     }
 
     @Override

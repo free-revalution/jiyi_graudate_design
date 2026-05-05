@@ -4,6 +4,8 @@ import com.example.login.dto.response.PageResult;
 import com.example.login.entity.Homework;
 import com.example.login.entity.HomeworkAnswer;
 import com.example.login.entity.HomeworkQuestion;
+
+import java.math.BigDecimal;
 import com.example.login.exception.BusinessException;
 import com.example.login.repository.HomeworkAnswerRepository;
 import com.example.login.repository.HomeworkQuestionRepository;
@@ -141,13 +143,15 @@ public class HomeworkServiceImpl implements HomeworkService {
     @Override
     public List<Homework> getMyHomework(Long courseId, Long userId) {
         List<Homework> all = homeworkRepository.findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(courseId, 0);
-        return all.stream().map(h -> {
-            Optional<HomeworkAnswer> answer = homeworkAnswerRepository.findByHomeworkIdAndUserId(h.getId(), userId);
-            if (answer.isPresent()) {
-                h.setSubmittedCount(h.getSubmittedCount() != null ? h.getSubmittedCount() : 0);
-            }
-            return h;
-        }).toList();
+        return all.stream()
+                .filter(h -> "published".equals(h.getStatus()))
+                .map(h -> {
+                    Optional<HomeworkAnswer> answer = homeworkAnswerRepository.findByHomeworkIdAndUserId(h.getId(), userId);
+                    if (answer.isPresent()) {
+                        h.setSubmittedCount(h.getSubmittedCount() != null ? h.getSubmittedCount() : 0);
+                    }
+                    return h;
+                }).collect(Collectors.toList());
     }
 
     @Override
@@ -222,6 +226,7 @@ public class HomeworkServiceImpl implements HomeworkService {
                     .answers(answers.toString())
                     .submitTime(new Date())
                     .createdTime(new Date())
+                    .isDeleted(0)
                     .build();
             try {
                 answer.setAnswers(objectMapper.writeValueAsString(answers));
@@ -230,5 +235,18 @@ public class HomeworkServiceImpl implements HomeworkService {
             }
             homeworkAnswerRepository.save(answer);
         }
+    }
+
+    @Override
+    public List<HomeworkAnswer> getHomeworkAnswers(Long homeworkId) {
+        return homeworkAnswerRepository.findByHomeworkIdAndIsDeleted(homeworkId, 0);
+    }
+
+    @Override
+    public void gradeHomework(Long homeworkId, Long userId, BigDecimal score) {
+        HomeworkAnswer answer = homeworkAnswerRepository.findByHomeworkIdAndUserId(homeworkId, userId)
+                .orElseThrow(() -> new BusinessException(404, "未找到该学生的作业"));
+        answer.setScore(score);
+        homeworkAnswerRepository.save(answer);
     }
 }

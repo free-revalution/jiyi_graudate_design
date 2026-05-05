@@ -5,6 +5,7 @@ import com.example.login.dto.request.HomeworkSubmitRequest;
 import com.example.login.dto.response.ApiResponse;
 import com.example.login.dto.response.PageResult;
 import com.example.login.entity.Homework;
+import com.example.login.entity.HomeworkAnswer;
 import com.example.login.entity.HomeworkQuestion;
 import com.example.login.service.HomeworkService;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -153,6 +154,24 @@ public class HomeworkController {
             @PathVariable Long id) {
         homeworkService.publishHomework(id);
         return ResponseEntity.ok(ApiResponse.success("发布成功", null));
+    }
+
+    @GetMapping("/course/{courseId}/homework/{id}/answers")
+    public ResponseEntity<ApiResponse<List<HomeworkAnswer>>> getHomeworkAnswers(
+            @PathVariable Long courseId,
+            @PathVariable Long id) {
+        return ResponseEntity.ok(ApiResponse.success(homeworkService.getHomeworkAnswers(id)));
+    }
+
+    @PutMapping("/course/{courseId}/homework/{id}/answer/{userId}/score")
+    public ResponseEntity<ApiResponse<Void>> gradeHomework(
+            @PathVariable Long courseId,
+            @PathVariable Long id,
+            @PathVariable Long userId,
+            @RequestBody Map<String, Object> body) {
+        homeworkService.gradeHomework(id, userId, body.get("score") != null ?
+                new java.math.BigDecimal(body.get("score").toString()) : null);
+        return ResponseEntity.ok(ApiResponse.success("批改成功", null));
     }
 
     // ==================== User Endpoints ====================

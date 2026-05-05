@@ -60,7 +60,7 @@ public class QuestionBankServiceImpl implements QuestionBankService {
                 .name(request.getName())
                 .category(request.getCategory())
                 .questionCount(request.getItems() != null ? request.getItems().size() : 0)
-                .status("active")
+                .status("enabled")
                 .creatorId(creatorId)
                 .isDeleted(0)
                 .createdTime(new Date())

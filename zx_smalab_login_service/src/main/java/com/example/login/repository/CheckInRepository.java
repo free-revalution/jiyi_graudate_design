@@ -16,4 +16,6 @@ public interface CheckInRepository extends JpaRepository<CheckIn, Long> {
     List<CheckIn> findByCourseIdAndIsDeletedOrderByCreatedTimeDesc(Long courseId, Integer isDeleted);
 
     Optional<CheckIn> findByIdAndIsDeleted(Long id, Integer isDeleted);
+
+    long countByIsDeleted(Integer isDeleted);
 }

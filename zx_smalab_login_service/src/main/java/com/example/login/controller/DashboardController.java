@@ -30,10 +30,10 @@ public class DashboardController {
         Map<String, Object> overview = new LinkedHashMap<>();
         overview.put("courseCount", courseRepository.countByIsDeleted(0));
         overview.put("studentCount", courseStudentRepository.countByIsDeleted(0));
-        overview.put("homeworkCount", homeworkRepository.count());
-        overview.put("exerciseCount", classExerciseRepository.count());
-        overview.put("trainingCount", trainingRepository.count());
-        overview.put("checkinCount", checkInRepository.count());
+        overview.put("homeworkCount", homeworkRepository.countByIsDeleted(0));
+        overview.put("exerciseCount", classExerciseRepository.countByIsDeleted(0));
+        overview.put("trainingCount", trainingRepository.countByIsDeleted(0));
+        overview.put("checkinCount", checkInRepository.countByIsDeleted(0));
         return ResponseEntity.ok(ApiResponse.success(overview));
     }
 

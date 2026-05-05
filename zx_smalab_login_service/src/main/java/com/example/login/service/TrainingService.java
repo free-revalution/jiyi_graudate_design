@@ -14,7 +14,7 @@ import java.util.Map;
  */
 public interface TrainingService {
 
-    PageResult<Training> getTrainingList(Long courseId, int page, int limit, String name);
+    PageResult<Training> getTrainingList(Long courseId, int page, int limit, String name, String status);
 
     Training createTraining(Long courseId, Training training, Long creatorId);
 
