@@ -485,8 +485,9 @@ const selectedNode = ref(null);
 
 /** 点击课程实训时在新标签页打开独立实训页面 */
 const openTrainingPage = () => {
-  const url = router.resolve({ name: 'ProfilePracticelevel', params: { id: route.params.id } });
-  window.open(url.href, '_blank');
+  const resolved = router.resolve({ name: 'ProfilePracticelevel', params: { id: route.params.id } });
+  const baseUrl = window.location.origin;
+  window.open(baseUrl + resolved.fullPath, '_blank');
 };
 
 /** 监听标签切换，切换到课程实训时打开新标签页 */
