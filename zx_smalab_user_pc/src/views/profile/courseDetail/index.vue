@@ -185,7 +185,7 @@
                   <el-empty v-else description="暂无课程资料" />
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="课程实训" name="try" @tab-click="openTrainingPage">
+              <el-tab-pane label="课程实训" name="try">
                 <div class="training-viewer">
                   <div class="training-list-panel">
                     <div class="training-list-header"><h3>实训列表</h3></div>
@@ -336,7 +336,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { VideoPlay, ChatDotRound, Share, ChatLineRound, ArrowDown, StarFilled, Headset, Search, Mic, ChatLineSquare, SetUp, Promotion } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -485,9 +485,14 @@ const selectedNode = ref(null);
 
 /** 点击课程实训时在新标签页打开独立实训页面 */
 const openTrainingPage = () => {
-  const url = router.resolve({ name: 'ProfilePracticeLevel', params: { id: route.params.id } });
+  const url = router.resolve({ name: 'ProfilePracticelevel', params: { id: route.params.id } });
   window.open(url.href, '_blank');
 };
+
+/** 监听标签切换，切换到课程实训时打开新标签页 */
+watch(activeTab, (newTab) => {
+  if (newTab === 'try') openTrainingPage();
+});
 
 const fetchTrainings = async () => {
   try {
