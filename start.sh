@@ -51,7 +51,7 @@ cd "$SCRIPT_DIR/zx_smalab_user_pc"
 rm -rf node_modules/.vite
 npx vite --host 0.0.0.0 > /tmp/user_pc.log 2>&1 &
 sleep 5
-if curl -sf http://127.0.0.1:3000/ >/dev/null 2>&1; then
+if grep -q "ready in" /tmp/user_pc.log 2>/dev/null; then
     echo -e "  ${GREEN}用户端已启动: http://127.0.0.1:3000${NC}"
 else
     echo -e "  ${RED}用户端启动失败，查看日志: cat /tmp/user_pc.log${NC}"
@@ -62,8 +62,8 @@ echo -e "${YELLOW}[3/3] 启动管理端 (8848)...${NC}"
 cd "$SCRIPT_DIR/zx_smalab_tea_mana_pc"
 [ ! -d "node_modules" ] && npm install --registry=https://registry.npmmirror.com -s
 npx vite --host 0.0.0.0 > /tmp/admin_pc.log 2>&1 &
-sleep 5
-if curl -sf http://127.0.0.1:8848/ >/dev/null 2>&1; then
+sleep 8
+if grep -q "ready in" /tmp/admin_pc.log 2>/dev/null; then
     echo -e "  ${GREEN}管理端已启动: http://127.0.0.1:8848${NC}"
 else
     echo -e "  ${RED}管理端启动失败，查看日志: cat /tmp/admin_pc.log${NC}"

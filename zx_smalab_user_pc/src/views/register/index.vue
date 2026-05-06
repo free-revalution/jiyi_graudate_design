@@ -146,11 +146,11 @@ const handleRegister = async () => {
         });
         router.push("/login");
       } else {
-        // 拦截器已弹出错误信息
+        ElMessage.error(response.msg || "注册失败，请重试");
       }
     } catch (error) {
-      console.error("注册失败:", error);
-      // interceptor already shows error message via ElMessage.error
+      const msg = error?.msg || error?.message || "注册失败，请检查网络";
+      ElMessage.error(msg);
     } finally {
       loading.value = false;
     }
