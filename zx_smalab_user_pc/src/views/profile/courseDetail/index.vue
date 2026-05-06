@@ -185,7 +185,7 @@
                   <el-empty v-else description="暂无课程资料" />
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="课程实训" name="try">
+              <el-tab-pane label="课程实训" name="try" @tab-click="openTrainingPage">
                 <div class="training-viewer">
                   <div class="training-list-panel">
                     <div class="training-list-header"><h3>实训列表</h3></div>
@@ -482,6 +482,12 @@ const trainingList = ref([]);
 const selectedTraining = ref(null);
 const trainingNodeTree = ref([]);
 const selectedNode = ref(null);
+
+/** 点击课程实训时在新标签页打开独立实训页面 */
+const openTrainingPage = () => {
+  const url = router.resolve({ name: 'ProfilePracticeLevel', params: { id: route.params.id } });
+  window.open(url.href, '_blank');
+};
 
 const fetchTrainings = async () => {
   try {
