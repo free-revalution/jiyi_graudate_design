@@ -1,6 +1,7 @@
 export default {
   path: '/profile',
   name: 'Profile',
+  component: () => import('@/views/profile/layout.vue'),
   redirect: '/profile/index',
   meta: {
     showNavbar: true,

@@ -149,7 +149,7 @@
         <div class="content-layout">
           <!-- 左侧主内容 -->
           <div class="main-content">
-            <el-tabs v-model="activeTab" class="course-tabs">
+            <el-tabs v-model="activeTab" class="course-tabs" @tab-click="handleTabClick">
               <el-tab-pane label="课程详情" name="detail">
                 <div class="course-detail-content">
                   <!-- 左侧课程介绍 -->
@@ -230,7 +230,7 @@
                   </div>
                 </div>
               </el-tab-pane>
-              <el-tab-pane label="课程作业" name="review">
+              <el-tab-pane label="实训作业" name="review">
                 <div v-if="!currentHomework" class="homework-list">
                   <el-empty v-if="homeworkList.length === 0" description="暂无作业" />
                   <div v-for="hw in homeworkList" :key="hw.id" class="homework-card">
@@ -336,7 +336,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, computed, watch } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import { VideoPlay, ChatDotRound, Share, ChatLineRound, ArrowDown, StarFilled, Headset, Search, Mic, ChatLineSquare, SetUp, Promotion } from "@element-plus/icons-vue";
 import { ElMessage, ElMessageBox } from "element-plus";
@@ -490,10 +490,16 @@ const openTrainingPage = () => {
   window.open(baseUrl + resolved.fullPath, '_blank');
 };
 
-/** 监听标签切换，切换到课程实训时打开新标签页 */
-watch(activeTab, (newTab) => {
-  if (newTab === 'try') openTrainingPage();
-});
+/** 点击标签时在新标签页打开对应页面 */
+const handleTabClick = (tab) => {
+  if (tab.paneName === 'try') openTrainingPage();
+  if (tab.paneName === 'review') openHomeworkPage();
+};
+
+const openHomeworkPage = () => {
+  const resolved = router.resolve({ name: 'ProfileHomework', params: { id: route.params.id } });
+  window.open(window.location.origin + resolved.fullPath, '_blank');
+};
 
 const fetchTrainings = async () => {
   try {

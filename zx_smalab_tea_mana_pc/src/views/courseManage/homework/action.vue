@@ -73,7 +73,8 @@
                             @click="selectQuestionType('multiple')">多选题</el-button>
                         <el-button :type="currentType === 'fill' ? 'primary' : 'default'" plain
                             @click="selectQuestionType('fill')">填空题</el-button>
-                    </div>
+                        <el-button :type="currentType === 'code' ? 'primary' : 'default'" plain
+                            @click="selectQuestionType('code')">代码题</el-button>                    </div>
                     <div class="import-actions">
                         <el-button type="primary" link>智能导入</el-button>
                         <el-button type="primary" link>选题</el-button>
@@ -108,6 +109,27 @@
                         <div class="answer-hint">
                             <span class="hint-label">正确答案：</span>
                             <span class="hint-value">{{ questionForm.answer || '请点击选项字母选择答案' }}</span>
+                        </div>
+                    </div>
+
+                    <!-- 代码题专属区域 -->
+                    <div v-if="currentType === 'code'" class="code-area">
+                        <div class="code-config">
+                            <span class="config-label">编程语言</span>
+                            <el-select v-model="questionForm.language" placeholder="选择语言" style="width: 200px">
+                                <el-option label="Python" value="python" />
+                                <el-option label="Java" value="java" />
+                                <el-option label="C/C++" value="cpp" />
+                                <el-option label="JavaScript" value="javascript" />
+                            </el-select>
+                        </div>
+                        <div class="code-field">
+                            <span class="field-label">初始代码（学生看到的模板）</span>
+                            <el-input :rows="8" type="textarea" v-model="questionForm.initialCode" placeholder="# 请在此处编写代码" style="font-family: Consolas, monospace" />
+                        </div>
+                        <div class="code-field">
+                            <span class="field-label">参考答案</span>
+                            <el-input :rows="8" type="textarea" v-model="questionForm.referenceCode" placeholder="输入参考代码答案" style="font-family: Consolas, monospace" />
                         </div>
                     </div>
 
@@ -214,7 +236,10 @@ const questionForm = reactive({
     analysis: "",
     difficulty: "0.8",
     knowledgePoints: [] as string[],
-    tags: [] as string[]
+    tags: [] as string[],
+    language: "python",
+    initialCode: "",
+    referenceCode: ""
 });
 
 /** 当前编辑序号 */
@@ -240,7 +265,7 @@ const groupedQuestions = computed(() => {
 
 /** 获取题型名称 */
 const getQuestionTypeName = (type: string) => {
-    const map: Record<string, string> = { single: "单选题", multiple: "多选题", fill: "填空题" };
+    const map: Record<string, string> = { single: "单选题", multiple: "多选题", fill: "填空题", code: "代码题" };
     return map[type] || "未知题型";
 };
 
@@ -263,6 +288,9 @@ const selectQuestion = (question: any) => {
     questionForm.answer = question.answer;
     questionForm.analysis = question.analysis;
     questionForm.difficulty = question.difficulty;
+    questionForm.language = question.language || "python";
+    questionForm.initialCode = question.initialCode || "";
+    questionForm.referenceCode = question.referenceCode || "";
 };
 
 /** 重置题目表单 */
@@ -274,6 +302,9 @@ const resetQuestionForm = () => {
     questionForm.difficulty = "0.8";
     questionForm.knowledgePoints = [];
     questionForm.tags = [];
+    questionForm.language = "python";
+    questionForm.initialCode = "";
+    questionForm.referenceCode = "";
 };
 
 /** 重置表单 */
@@ -368,10 +399,13 @@ const saveQuestion = () => {
         id: currentQuestion.value?.id || Date.now(),
         type: currentType.value,
         content: questionForm.content,
-        options: currentType.value !== "fill" ? [...questionForm.options.map(o => ({ ...o }))] : [],
+        options: (currentType.value === "single" || currentType.value === "multiple") ? [...questionForm.options.map(o => ({ ...o }))] : [],
         answer: questionForm.answer,
         analysis: questionForm.analysis,
-        difficulty: questionForm.difficulty
+        difficulty: questionForm.difficulty,
+        language: questionForm.language,
+        initialCode: questionForm.initialCode,
+        referenceCode: questionForm.referenceCode
     };
     if (currentQuestion.value) {
         const index = questionList.value.findIndex(q => q.id === currentQuestion.value.id);
@@ -740,6 +774,34 @@ onMounted(async () => {
 
 .answer-area {
     margin-bottom: 20px;
+}
+
+.code-area {
+    margin-bottom: 20px;
+
+    .code-config {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        margin-bottom: 15px;
+
+        .config-label {
+            font-size: 14px;
+            color: #606266;
+            white-space: nowrap;
+        }
+    }
+
+    .code-field {
+        margin-bottom: 15px;
+
+        .field-label {
+            display: block;
+            font-size: 13px;
+            color: #909399;
+            margin-bottom: 6px;
+        }
+    }
 }
 
 .question-config {

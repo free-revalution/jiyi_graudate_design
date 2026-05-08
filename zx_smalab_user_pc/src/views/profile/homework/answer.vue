@@ -28,6 +28,10 @@
               <span class="label">填空题</span>
               <span class="value">{{ questionStats.fill }} 道</span>
             </div>
+            <div class="stat-tag" v-if="codeQuestions.length > 0">
+              <span class="label">代码题</span>
+              <span class="value">{{ questionStats.code }} 道</span>
+            </div>
             <div class="stat-tag total">
               <span class="label">总计</span>
               <span class="value">{{ questionStats.total }} 道</span>
@@ -113,6 +117,34 @@
             </div>
           </div>
         </div>
+
+        <!-- 代码题 -->
+        <div class="question-section" v-if="codeQuestions.length">
+          <div class="section-header">
+            <span class="section-title">五、代码题</span>
+            <span class="section-count">（共{{ codeQuestions.length }}题）</span>
+          </div>
+          <div class="question-list">
+            <div v-for="(q, index) in codeQuestions" :key="q.id" class="question-item code-question-item">
+              <div class="question-num">{{ index + 1 }}.</div>
+              <div class="question-content">
+                <div class="question-text" v-html="q.title"></div>
+                <div class="code-editor-area">
+                  <div class="code-editor-header">
+                    <span class="file-name">{{ q.language || 'python' }}</span>
+                    <el-button size="small" @click="resetCode(q.id)">重置代码</el-button>
+                  </div>
+                  <textarea
+                    v-model="answers[q.id]"
+                    class="code-textarea"
+                    placeholder="# 请在此处编写代码"
+                    :rows="15"
+                  ></textarea>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
@@ -146,6 +178,7 @@ const singleQuestions = computed(() => questions.value.filter(q => q.type === "s
 const multipleQuestions = computed(() => questions.value.filter(q => q.type === "multiple"));
 const judgeQuestions = computed(() => questions.value.filter(q => q.type === "judge"));
 const fillQuestions = computed(() => questions.value.filter(q => q.type === "fill"));
+const codeQuestions = computed(() => questions.value.filter(q => q.type === "code"));
 
 // 题目统计
 const questionStats = computed(() => {
@@ -153,12 +186,14 @@ const questionStats = computed(() => {
   const multiple = multipleQuestions.value.length;
   const judge = judgeQuestions.value.length;
   const fill = fillQuestions.value.length;
+  const code = codeQuestions.value.length;
   return {
     single,
     multiple,
     judge,
     fill,
-    total: single + multiple + judge + fill
+    code,
+    total: single + multiple + judge + fill + code
   };
 });
 
@@ -173,6 +208,9 @@ const fetchQuestions = async () => {
       questions.value.forEach(q => {
         if (q.type === "multiple") {
           answers[q.id] = [];
+        }
+        if (q.type === "code") {
+          answers[q.id] = q.initialCode || "";
         }
       });
     }
@@ -191,6 +229,12 @@ onMounted(() => {
 // 返回
 const goBack = () => {
   router.back();
+};
+
+// 重置代码
+const resetCode = (questionId) => {
+  const q = questions.value.find(q => q.id === questionId);
+  answers[questionId] = q?.initialCode || "";
 };
 
 // 提交作业
@@ -351,6 +395,42 @@ const submitHomework = () => {
               color: #303133;
               line-height: 1.6;
               margin-bottom: 15px;
+            }
+
+            .code-editor-area {
+              border: 1px solid #e4e7ed;
+              border-radius: 6px;
+              overflow: hidden;
+
+              .code-editor-header {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 8px 15px;
+                background: #fafafa;
+                border-bottom: 1px solid #e4e7ed;
+
+                .file-name {
+                  font-size: 13px;
+                  color: #909399;
+                  font-family: Consolas, monospace;
+                }
+              }
+
+              .code-textarea {
+                width: 100%;
+                background: #1e1e1e;
+                color: #d4d4d4;
+                font-family: Consolas, "Courier New", monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                padding: 15px;
+                border: none;
+                outline: none;
+                resize: vertical;
+                box-sizing: border-box;
+                tab-size: 2;
+              }
             }
 
             .options-group {

@@ -16,13 +16,11 @@ const route = useRoute()
 const router = useRouter()
 const isRouterReady = ref(false)
 
-// 等待路由准备好后再渲染
 onMounted(async () => {
   await router.isReady()
   isRouterReady.value = true
 })
 
-// 根据路由meta配置决定是否显示Navbar和Footer
 const showNavbar = computed(() => route.meta.showNavbar !== false)
 const showFooter = computed(() => route.meta.showFooter !== false)
 </script>
