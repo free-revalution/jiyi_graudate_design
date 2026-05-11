@@ -149,6 +149,10 @@
                     :rows="18"
                   ></textarea>
                 </div>
+                <div v-if="q.referenceCode" class="reference-code-hint">
+                  <el-alert type="success" :closable="false" show-icon title="示例代码" style="margin-bottom:10px" />
+                  <pre class="reference-code-preview">{{ q.referenceCode }}</pre>
+                </div>
               </div>
             </div>
           </div>
@@ -462,6 +466,24 @@ const submitHomework = () => {
                 resize: vertical;
                 box-sizing: border-box;
                 tab-size: 2;
+              }
+            }
+
+            .reference-code-hint {
+              margin-top: 15px;
+
+              .reference-code-preview {
+                background: #f0f9eb;
+                border: 1px solid #e1f3d8;
+                border-radius: 6px;
+                padding: 12px 15px;
+                font-family: Consolas, "Courier New", monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                color: #67c23a;
+                overflow-x: auto;
+                margin: 0;
+                white-space: pre-wrap;
               }
             }
 
