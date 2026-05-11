@@ -129,16 +129,24 @@
               <div class="question-num">{{ index + 1 }}.</div>
               <div class="question-content">
                 <div class="question-text" v-html="q.title"></div>
+                <div v-if="q.initialCode" class="initial-code-hint">
+                  <el-alert type="info" :closable="false" show-icon title="初始代码模板" style="margin-bottom:10px" />
+                  <pre class="initial-code-preview">{{ q.initialCode }}</pre>
+                </div>
                 <div class="code-editor-area">
                   <div class="code-editor-header">
-                    <span class="file-name">{{ q.language || 'python' }}</span>
-                    <el-button size="small" @click="resetCode(q.id)">重置代码</el-button>
+                    <el-select v-model="codeLanguages[q.id]" size="small" style="width:140px" @change="handleLangChange(q.id)">
+                      <el-option label="Python" value="python" />
+                      <el-option label="C/C++" value="cpp" />
+                      <el-option label="Java" value="java" />
+                    </el-select>
+                    <el-button size="small" @click="resetCode(q)">重置代码</el-button>
                   </div>
                   <textarea
                     v-model="answers[q.id]"
                     class="code-textarea"
-                    placeholder="# 请在此处编写代码"
-                    :rows="15"
+                    :placeholder="getCodePlaceholder(codeLanguages[q.id])"
+                    :rows="18"
                   ></textarea>
                 </div>
               </div>
@@ -169,6 +177,8 @@ const homeworkInfo = ref({
 
 // 答案
 const answers = reactive({});
+// 代码题语言选择
+const codeLanguages = reactive({});
 
 // 题目列表（统一格式，type: single单选, multiple多选, judge判断, fill填空）
 const questions = ref([]);
@@ -211,6 +221,7 @@ const fetchQuestions = async () => {
         }
         if (q.type === "code") {
           answers[q.id] = q.initialCode || "";
+          codeLanguages[q.id] = q.language || "python";
         }
       });
     }
@@ -232,9 +243,18 @@ const goBack = () => {
 };
 
 // 重置代码
-const resetCode = (questionId) => {
-  const q = questions.value.find(q => q.id === questionId);
-  answers[questionId] = q?.initialCode || "";
+const resetCode = (q) => {
+  answers[q.id] = q.initialCode || "";
+};
+
+// 语言切换时的占位提示
+const getCodePlaceholder = (lang) => {
+  const map = { python: "# 请在此处编写 Python 代码", cpp: "// 请在此处编写 C/C++ 代码", java: "// 请在此处编写 Java 代码" };
+  return map[lang] || "// 请在此处编写代码";
+};
+
+const handleLangChange = (questionId) => {
+  // 语言切换时保留代码内容，只改变语言标记
 };
 
 // 提交作业
@@ -397,6 +417,24 @@ const submitHomework = () => {
               margin-bottom: 15px;
             }
 
+            .initial-code-hint {
+              margin-bottom: 15px;
+
+              .initial-code-preview {
+                background: #f5f7fa;
+                border: 1px solid #e4e7ed;
+                border-radius: 6px;
+                padding: 12px 15px;
+                font-family: Consolas, "Courier New", monospace;
+                font-size: 13px;
+                line-height: 1.6;
+                color: #606266;
+                overflow-x: auto;
+                margin: 0;
+                white-space: pre-wrap;
+              }
+            }
+
             .code-editor-area {
               border: 1px solid #e4e7ed;
               border-radius: 6px;
@@ -409,12 +447,6 @@ const submitHomework = () => {
                 padding: 8px 15px;
                 background: #fafafa;
                 border-bottom: 1px solid #e4e7ed;
-
-                .file-name {
-                  font-size: 13px;
-                  color: #909399;
-                  font-family: Consolas, monospace;
-                }
               }
 
               .code-textarea {

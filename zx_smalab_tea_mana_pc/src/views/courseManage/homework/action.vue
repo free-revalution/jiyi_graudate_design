@@ -460,7 +460,10 @@ const saveHomework = async () => {
             answer: q.answer,
             analysis: q.analysis,
             difficulty: parseFloat(q.difficulty) || 0.6,
-            sortOrder: index
+            sortOrder: index,
+            language: q.language || "",
+            initialCode: q.initialCode || "",
+            referenceCode: q.referenceCode || ""
         }))
     };
     try {
