@@ -59,6 +59,15 @@ public class HomeworkQuestion {
     @Column(name = "created_time")
     private Date createdTime;
 
+    @Column(name = "language", length = 20)
+    private String language;
+
+    @Column(name = "initial_code", columnDefinition = "TEXT")
+    private String initialCode;
+
+    @Column(name = "reference_code", columnDefinition = "TEXT")
+    private String referenceCode;
+
     @Column(name = "is_deleted")
     private Integer isDeleted;
 

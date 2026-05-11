@@ -28,6 +28,9 @@ public class HomeworkRequest {
         private String analysis;
         private Double difficulty;
         private Integer sortOrder;
+        private String language;
+        private String initialCode;
+        private String referenceCode;
     }
 
     @Data

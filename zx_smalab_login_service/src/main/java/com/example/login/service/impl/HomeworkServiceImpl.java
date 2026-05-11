@@ -172,11 +172,15 @@ public class HomeworkServiceImpl implements HomeworkService {
                 case "multiple": prefix = "m"; break;
                 case "judge": prefix = "j"; break;
                 case "fill": prefix = "f"; break;
+                case "code": prefix = "c"; break;
                 default: prefix = "q"; break;
             }
             map.put("id", prefix + q.getSortOrder());
             map.put("type", q.getType());
             map.put("title", q.getContent());
+            map.put("language", q.getLanguage());
+            map.put("initialCode", q.getInitialCode());
+            map.put("referenceCode", q.getReferenceCode());
 
             // Transform options: [{content:"xxx"}] -> [{key:"A", value:"xxx"}]
             if (q.getOptions() != null && !q.getOptions().isEmpty()) {

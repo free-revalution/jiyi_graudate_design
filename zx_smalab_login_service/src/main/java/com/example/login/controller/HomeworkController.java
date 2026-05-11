@@ -78,6 +78,9 @@ public class HomeworkController {
                         .difficulty(item.getDifficulty() != null ?
                                 java.math.BigDecimal.valueOf(item.getDifficulty()) : null)
                         .sortOrder(item.getSortOrder())
+                        .language(item.getLanguage())
+                        .initialCode(item.getInitialCode())
+                        .referenceCode(item.getReferenceCode())
                         .build();
                 // Serialize options to JSON string
                 if (item.getOptions() != null) {
@@ -113,6 +116,9 @@ public class HomeworkController {
             qMap.put("analysis", q.getAnalysis());
             qMap.put("difficulty", q.getDifficulty());
             qMap.put("sortOrder", q.getSortOrder());
+            qMap.put("language", q.getLanguage());
+            qMap.put("initialCode", q.getInitialCode());
+            qMap.put("referenceCode", q.getReferenceCode());
             // Parse options JSON string to list
             if (q.getOptions() != null && !q.getOptions().isEmpty()) {
                 try {
@@ -169,6 +175,9 @@ public class HomeworkController {
                         .difficulty(item.getDifficulty() != null ?
                                 java.math.BigDecimal.valueOf(item.getDifficulty()) : null)
                         .sortOrder(item.getSortOrder())
+                        .language(item.getLanguage())
+                        .initialCode(item.getInitialCode())
+                        .referenceCode(item.getReferenceCode())
                         .build();
                 if (item.getOptions() != null) {
                     try {
