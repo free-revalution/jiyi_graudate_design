@@ -170,8 +170,13 @@ const viewDetail = async (row: any) => {
         const detailData = detailRes.data || detailRes;
         const questions = detailData.questions || [];
 
-        // 学生的答案对象
-        const studentAnswers = row.answers || row.answer || {};
+        // 学生的答案对象（answers 是 JSON 字符串，需要解析）
+        let studentAnswers = {};
+        try {
+            studentAnswers = typeof row.answers === 'string' ? JSON.parse(row.answers) : (row.answers || {});
+        } catch (e) {
+            studentAnswers = {};
+        }
 
         // 组合题目+答案
         detailQuestions.value = questions.map((q: any) => {

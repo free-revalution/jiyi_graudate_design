@@ -218,12 +218,13 @@ const fetchQuestions = async () => {
     if (data) {
       homeworkInfo.value.name = data.name || data.title || "";
       questions.value = data.questions || data || [];
-      // 初始化多选题答案为数组
+      // 初始化答案
       questions.value.forEach(q => {
         if (q.type === "multiple") {
           answers[q.id] = [];
-        }
-        if (q.type === "code") {
+        } else if (q.type === "fill") {
+          answers[q.id] = "";
+        } else if (q.type === "code") {
           answers[q.id] = q.initialCode || "";
           codeLanguages[q.id] = q.language || "python";
         }

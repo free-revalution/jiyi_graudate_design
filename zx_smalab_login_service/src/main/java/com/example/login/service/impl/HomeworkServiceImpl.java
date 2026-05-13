@@ -165,17 +165,7 @@ public class HomeworkServiceImpl implements HomeworkService {
         for (HomeworkQuestion q : questions) {
             Map<String, Object> map = new LinkedHashMap<>();
 
-            // Generate ID based on type prefix + sortOrder
-            String prefix;
-            switch (q.getType()) {
-                case "single": prefix = "s"; break;
-                case "multiple": prefix = "m"; break;
-                case "judge": prefix = "j"; break;
-                case "fill": prefix = "f"; break;
-                case "code": prefix = "c"; break;
-                default: prefix = "q"; break;
-            }
-            map.put("id", prefix + q.getSortOrder());
+            map.put("id", q.getId());
             map.put("type", q.getType());
             map.put("title", q.getContent());
             map.put("language", q.getLanguage());
