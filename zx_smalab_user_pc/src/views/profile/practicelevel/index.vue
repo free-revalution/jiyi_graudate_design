@@ -125,8 +125,8 @@ const fetchTrainingList = async () => {
   try {
     const res = await getTrainingList(route.params.id);
     const data = res.data;
-    trainingList.value = Array.isArray(data?.list) ? data.list : (Array.isArray(data) ? data : []);
-    pagination.total = data?.total || trainingList.value.length;
+    trainingList.value = (Array.isArray(data?.list) ? data.list : (Array.isArray(data) ? data : [])).filter(t => t.status === '进行中');
+    pagination.total = trainingList.value.length;
   } catch (e) {
     console.error("获取实训列表失败:", e);
   } finally {

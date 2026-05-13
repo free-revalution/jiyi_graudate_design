@@ -505,7 +505,7 @@ const fetchTrainings = async () => {
   try {
     const res = await getTrainingList(route.params.id);
     const data = res.data;
-    trainingList.value = Array.isArray(data?.list) ? data.list : (Array.isArray(data) ? data : []);
+    trainingList.value = (Array.isArray(data?.list) ? data.list : (Array.isArray(data) ? data : [])).filter(t => t.status === '进行中');
   } catch (e) {
     console.error("获取实训列表失败:", e);
   }
