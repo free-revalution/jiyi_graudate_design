@@ -94,7 +94,7 @@
                   立即参加
                 </el-button>
                 <template v-else>
-                  <el-button type="success" class="enroll-btn" disabled>已参加</el-button>
+                  <el-button type="info" class="enroll-btn" disabled>已参加</el-button>
                   <el-button type="danger" plain class="enroll-btn" @click="handleUnenroll">退课</el-button>
                 </template>
               </div>

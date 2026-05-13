@@ -90,7 +90,7 @@
 
               <!-- 报名按钮 -->
               <div class="action-btn-area">
-                <el-button type="success" class="enroll-btn" :loading="enrollLoading" :disabled="enrolled" @click="handleEnroll">
+                <el-button :type="enrolled ? 'info' : 'success'" class="enroll-btn" :loading="enrollLoading" :disabled="enrolled" @click="handleEnroll">
                   {{ enrolled ? '已参加' : '立即参加' }}
                 </el-button>
               </div>
