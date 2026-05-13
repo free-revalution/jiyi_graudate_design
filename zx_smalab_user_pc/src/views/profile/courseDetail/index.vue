@@ -342,6 +342,7 @@ import { VideoPlay, ChatDotRound, Share, ChatLineRound, ArrowDown, StarFilled, H
 import { ElMessage, ElMessageBox } from "element-plus";
 import { getMyCourseDetail, unenrollCourse } from "@/api/user";
 import { enrollCourse, getMaterialList, getTrainingList, getTrainingNodes, getHomeworkList, getHomeworkQuestions, submitHomework } from "@/api/course";
+import request from "@/api/index";
 
 const route = useRoute();
 const router = useRouter();
@@ -445,6 +446,12 @@ const fetchCourseDetail = async () => {
       recommendCourses.value = data.recommendCourses || [];
       courseNotice.value = data.notice || courseNotice.value;
     }
+    // 检查是否已选课
+    try {
+      const myRes = await request.get('/api/my/courses');
+      const myList = myRes.data || [];
+      enrolled.value = myList.some(m => m.id === Number(route.params.id));
+    } catch (e) {}
   } catch (error) {
     console.error("获取课程详情失败:", error);
   }
